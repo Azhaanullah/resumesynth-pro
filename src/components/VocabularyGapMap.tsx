@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
 import { CheckCircle2, AlertCircle, Plus, Sparkles, Search } from 'lucide-react';
+import { SmoothInput } from './ui/SmoothInput';
 
 interface VocabularyGapMapProps {
   analysis: AnalysisResult;
@@ -83,19 +84,18 @@ export const VocabularyGapMap: React.FC<VocabularyGapMapProps> = ({ analysis, on
           </div>
         </div>
 
-        {/* Search Bar with Accessible Label */}
-        <div className="relative mb-4">
+        {/* Search Bar with Smooth Animated Caret */}
+        <div className="mb-4">
           <label htmlFor="keyword-search-input" className="sr-only">
             Filter skills by name
           </label>
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" aria-hidden="true" />
-          <input
+          <SmoothInput
             id="keyword-search-input"
-            type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter skills or tools (e.g., Docker, SQL, Python)..."
-            className="w-full min-h-[44px] pl-10 pr-3.5 py-2 rounded-xl bg-black/50 border border-white/15 text-sm sm:text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-lime-400"
+            leadingIcon={<Search className="w-4 h-4" aria-hidden="true" />}
+            caretColor="bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]"
           />
         </div>
 
