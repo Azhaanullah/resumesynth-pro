@@ -271,6 +271,7 @@ export const App: React.FC = () => {
               : 'max-w-[1880px] px-6 sm:px-12 lg:px-16 enlarged-workspace'
           }`}
         >
+          <ProfileSettings />
           {/* Section 1: Hero & Role Presets */}
           <div id="dashboard">
             <HeroSection
