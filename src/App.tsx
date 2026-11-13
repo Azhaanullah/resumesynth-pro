@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { PRESETS } from './data/presets';
 import { runAtsAnalysis, detectQualityIssues, generateInterviewQuestions } from './utils/atsEngine';
 import { JobApplication, TailorMode, QualityIssue } from './types';
+import { ProfileSettings } from './components/ProfileSettings';
 
 // Components
 import { Header } from './components/Header';
