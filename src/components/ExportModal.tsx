@@ -8,6 +8,7 @@ interface ExportModalProps {
   resumeText: string;
   analysis: AnalysisResult;
   role: string;
+  onOpenAtsPreview?: () => void;
 }
 
 export const ExportModal: React.FC<ExportModalProps> = ({
@@ -15,7 +16,8 @@ export const ExportModal: React.FC<ExportModalProps> = ({
   onClose,
   resumeText,
   analysis,
-  role
+  role,
+  onOpenAtsPreview
 }) => {
   const [copiedFormat, setCopiedFormat] = useState<string | null>(null);
 
@@ -114,11 +116,15 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               type="button"
               onClick={() => {
                 onClose();
-                window.print();
+                if (onOpenAtsPreview) {
+                  onOpenAtsPreview();
+                } else {
+                  window.print();
+                }
               }}
               className="mt-4 w-full min-h-[44px] py-2 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold text-xs transition cursor-pointer"
             >
-              Open Print / PDF
+              Open Print / PDF Preview
             </button>
           </div>
 

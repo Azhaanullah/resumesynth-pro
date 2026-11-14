@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Upload, X, FileCheck, ArrowRight, AlertCircle, Maximize2, ExternalLink, Sparkles } from 'lucide-react';
+import { Upload, X, FileCheck, ArrowRight, AlertCircle, Maximize2, ExternalLink, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
 import { countWords, countBullets } from '../utils/atsEngine';
+import { parseResumeFile } from '../utils/documentParser';
 import { JobDescriptionModal } from './JobDescriptionModal';
 import { ResumeEditorModal } from './ResumeEditorModal';
 
@@ -29,13 +30,17 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
   const [isJdModalOpen, setIsJdModalOpen] = useState(false);
   const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
+  const [isParsingFile, setIsParsingFile] = useState(false);
+  const [parseSuccessMsg, setParseSuccessMsg] = useState<string | null>(null);
+
   const jdWords = countWords(jobDescription);
   const resumeWords = countWords(resumeText);
   const resumeBullets = countBullets(resumeText);
 
-  const handleFileUpload = (file: File | undefined) => {
+  const handleFileUpload = async (file: File | undefined) => {
     if (!file) return;
     setFileError(null);
+    setParseSuccessMsg(null);
 
     if (!/\.(pdf|docx?|txt|md)$/i.test(file.name)) {
       setFileError("Please upload a PDF, DOCX, TXT, or MD resume file.");
@@ -48,15 +53,16 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
     }
 
     setStagedFile(file);
+    setIsParsingFile(true);
 
-    // If it's a text file or markdown, read directly
-    if (/\.(txt|md)$/i.test(file.name)) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const content = e.target?.result as string;
-        if (content) onResumeChange(content);
-      };
-      reader.readAsText(file);
+    try {
+      const parsed = await parseResumeFile(file);
+      onResumeChange(parsed.text);
+      setParseSuccessMsg(`Successfully parsed ${parsed.wordCount} words from ${file.name}`);
+    } catch (err: any) {
+      setFileError(err.message || 'Failed to parse file. Please try pasting raw text directly.');
+    } finally {
+      setIsParsingFile(false);
     }
   };
 
@@ -289,6 +295,16 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
           </div>
         )}
 
+        {parseSuccessMsg && (
+          <div
+            role="status"
+            className="mb-4 p-3.5 rounded-xl bg-lime-400/15 border border-lime-400/30 text-lime-200 text-xs flex items-center gap-2"
+          >
+            <CheckCircle2 className="w-4 h-4 text-lime-400 shrink-0" aria-hidden="true" />
+            <span>{parseSuccessMsg}</span>
+          </div>
+        )}
+
         <div
           onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
           onDragLeave={() => setIsDragging(false)}
@@ -314,7 +330,13 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
             aria-label="Upload resume file"
           />
 
-          {stagedFile ? (
+          {isParsingFile ? (
+            <div className="flex flex-col items-center justify-center py-4 text-center">
+              <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-2" />
+              <span className="text-sm font-bold text-white">Extracting text from document...</span>
+              <span className="text-xs text-slate-400 mt-1">Reading sections and formatting into editor</span>
+            </div>
+          ) : stagedFile ? (
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3 text-left">
                 <div
@@ -326,7 +348,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                 <div>
                   <h4 className="text-sm font-bold text-white">{stagedFile.name}</h4>
                   <p className="text-xs text-slate-300">
-                    {(stagedFile.size / (1024 * 1024)).toFixed(2)} MB • File staged for parsing
+                    {(stagedFile.size / (1024 * 1024)).toFixed(2)} MB • Document successfully parsed into workspace
                   </p>
                 </div>
               </div>
@@ -340,7 +362,10 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                 </label>
                 <button
                   type="button"
-                  onClick={() => setStagedFile(null)}
+                  onClick={() => {
+                    setStagedFile(null);
+                    setParseSuccessMsg(null);
+                  }}
                   className="min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer flex items-center justify-center"
                   aria-label="Remove uploaded file"
                 >
@@ -355,7 +380,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                 Click to browse or drag & drop your resume file here
               </span>
               <span className="text-xs text-slate-300 mt-1 block">
-                Supports PDF, DOCX, TXT, and Markdown documents
+                Supports PDF, DOCX, TXT, and Markdown documents with instant client-side parsing
               </span>
             </label>
           )}

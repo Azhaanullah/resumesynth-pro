@@ -100,3 +100,33 @@ export interface JobApplication {
 
 export type PreviewTemplate = 'modern' | 'minimal' | 'ats_classic' | 'executive';
 export type TailorMode = 'Standard Tailor' | 'Technical Role' | 'Fresher / Campus' | 'Data / AI Role' | 'Management / Lead';
+
+export interface ResumeProfile {
+  id: string;
+  name: string;
+  targetRole: string;
+  company?: string;
+  resumeText: string;
+  jobDescription: string;
+  updatedAt: string;
+}
+
+export type CoverLetterTone = 'Confident' | 'Professional' | 'Enthusiastic' | 'Executive';
+
+export interface CoverLetterData {
+  company: string;
+  role: string;
+  tone: CoverLetterTone;
+  content: string;
+  matchedKeywords: string[];
+}
+
+export interface BaselineSnapshot {
+  id: string;
+  timestamp: string;
+  resumeText: string;
+  overallScore: number;
+  skillsFound: number;
+  verbsScore: number;
+  proofScore: number;
+}

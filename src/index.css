@@ -46,14 +46,20 @@
 
 /* 3. High-Contrast Print Styles for PDF Generation */
 @media print {
+  .no-print {
+    display: none !important;
+  }
   body * {
     visibility: hidden;
   }
   #printable-resume,
-  #printable-resume * {
+  #printable-resume *,
+  #ats-printable-document,
+  #ats-printable-document * {
     visibility: visible;
   }
-  #printable-resume {
+  #printable-resume,
+  #ats-printable-document {
     position: absolute;
     left: 0;
     top: 0;

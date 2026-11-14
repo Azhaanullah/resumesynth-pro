@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { LayoutDashboard, FileText, BarChart2, Wand2, Edit3, Briefcase, HelpCircle, ShieldCheck, PanelLeftClose } from 'lucide-react';
+import { LayoutDashboard, FileText, BarChart2, Wand2, Edit3, Briefcase, HelpCircle, ShieldCheck, PanelLeftClose, GitCompare, Mail } from 'lucide-react';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -18,7 +18,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
     { id: 'my-resume', label: 'Inputs & File Upload', icon: FileText },
     { id: 'ats-analysis', label: 'ATS Signal Analysis', icon: BarChart2 },
+    { id: 'diff-viewer', label: 'Version & Score Diff', icon: GitCompare },
     { id: 'feature-suite', label: 'STAR Bullet Rewriter', icon: Wand2 },
+    { id: 'cover-letter', label: 'AI Cover Letter', icon: Mail },
     { id: 'resume-editor', label: 'Resume Editor & Preview', icon: Edit3 },
     { id: 'resume-health', label: 'Quality & Health', icon: ShieldCheck },
     { id: 'applications', label: 'Job Applications', icon: Briefcase },

@@ -1,24 +1,38 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { PRESETS } from './data/presets';
 import { runAtsAnalysis, detectQualityIssues, generateInterviewQuestions } from './utils/atsEngine';
-import { JobApplication, TailorMode, QualityIssue } from './types';
+import { JobApplication, TailorMode, QualityIssue, ResumeProfile, BaselineSnapshot } from './types';
+import {
+  loadSavedProfiles,
+  saveProfiles,
+  loadActiveProfileId,
+  saveActiveProfileId,
+  loadBaselineSnapshot,
+  saveBaselineSnapshot,
+  loadSavedApplications,
+  saveApplications
+} from './utils/storage';
 
 // Components
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { HeroSection } from './components/HeroSection';
 import { InputWorkspace } from './components/InputWorkspace';
+import { ProfileManager } from './components/ProfileManager';
 import { ScoreRing } from './components/ScoreRing';
 import { SignalGraph } from './components/SignalGraph';
 import { VocabularyGapMap } from './components/VocabularyGapMap';
+import { VersionDiffViewer } from './components/VersionDiffViewer';
 import { StarBulletOptimizer } from './components/StarBulletOptimizer';
+import { CoverLetterGenerator } from './components/CoverLetterGenerator';
 import { ResumeHealthSection } from './components/ResumeHealthSection';
 import { ResumeEditorLivePreview } from './components/ResumeEditorLivePreview';
 import { InterviewPrepRadar } from './components/InterviewPrepRadar';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { ExportModal } from './components/ExportModal';
+import { AtsPdfPreviewModal } from './components/AtsPdfPreviewModal';
 
-import { Sparkles, ShieldCheck, Sliders } from 'lucide-react';
+import { Sparkles, ShieldCheck, Sliders, Printer } from 'lucide-react';
 
 export const App: React.FC = () => {
   // Theme & Layout state with localStorage persistence
@@ -100,23 +114,59 @@ export const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState('dashboard');
   const [showHowItWorks, setShowHowItWorks] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showAtsPdfModal, setShowAtsPdfModal] = useState(false);
+
+  // Saved Profiles State
+  const [profiles, setProfiles] = useState<ResumeProfile[]>(() => loadSavedProfiles());
+  const [activeProfileId, setActiveProfileId] = useState<string>(() => loadActiveProfileId());
+
+  const initialProfile = profiles.find(p => p.id === activeProfileId) || profiles[0];
 
   // Core Data state
   const [selectedPresetId, setSelectedPresetId] = useState('backend');
-  const [jobDescription, setJobDescription] = useState(PRESETS.backend.jd);
-  const [resumeText, setResumeText] = useState(PRESETS.backend.resume);
-  const [targetRole, setTargetRole] = useState(PRESETS.backend.role);
+  const [jobDescription, setJobDescription] = useState(initialProfile?.jobDescription || PRESETS.backend.jd);
+  const [resumeText, setResumeText] = useState(initialProfile?.resumeText || PRESETS.backend.resume);
+  const [targetRole, setTargetRole] = useState(initialProfile?.targetRole || PRESETS.backend.role);
   const [tailorMode, setTailorMode] = useState<TailorMode>('Standard Tailor');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Applications Tracker state
-  const [applications, setApplications] = useState<JobApplication[]>([
-    { id: 'app-1', company: 'Stripe', role: 'Junior Backend Systems Engineer', score: 86, status: 'Tailored', dateAdded: '2026-10-01', salary: '$140k - $160k' },
-    { id: 'app-2', company: 'Spotify', role: 'Data Analyst Intern', score: 79, status: 'Interviewing', dateAdded: '2026-10-02', salary: '$55/hr' },
-    { id: 'app-3', company: 'Vercel', role: 'Full Stack Engineer', score: 92, status: 'Applied', dateAdded: '2026-10-03', salary: '$150k - $175k' },
-    { id: 'app-4', company: 'Airbnb', role: 'Frontend Software Engineer', score: 74, status: 'Draft', dateAdded: '2026-10-04', salary: '$160k - $185k' },
-  ]);
+  // Baseline Snapshot for Before vs After Diff
+  const [baseline, setBaseline] = useState<BaselineSnapshot | null>(() => loadBaselineSnapshot());
+
+  // Applications Tracker state with localStorage persistence
+  const [applications, setApplications] = useState<JobApplication[]>(() => {
+    return loadSavedApplications() || [
+      { id: 'app-1', company: 'Stripe', role: 'Junior Backend Systems Engineer', score: 86, status: 'Tailored', dateAdded: '2026-10-01', salary: '$140k - $160k' },
+      { id: 'app-2', company: 'Spotify', role: 'Data Analyst Intern', score: 79, status: 'Interviewing', dateAdded: '2026-10-02', salary: '$55/hr' },
+      { id: 'app-3', company: 'Vercel', role: 'Full Stack Engineer', score: 92, status: 'Applied', dateAdded: '2026-10-03', salary: '$150k - $175k' },
+      { id: 'app-4', company: 'Airbnb', role: 'Frontend Software Engineer', score: 74, status: 'Draft', dateAdded: '2026-10-04', salary: '$160k - $185k' },
+    ];
+  });
+
+  // Sync state to localStorage
+  useEffect(() => {
+    saveApplications(applications);
+  }, [applications]);
+
+  useEffect(() => {
+    saveProfiles(profiles);
+  }, [profiles]);
+
+  useEffect(() => {
+    saveActiveProfileId(activeProfileId);
+  }, [activeProfileId]);
+
+  // Keep active profile synced with local edits
+  useEffect(() => {
+    setProfiles(prev =>
+      prev.map(p =>
+        p.id === activeProfileId
+          ? { ...p, resumeText, jobDescription, targetRole, updatedAt: new Date().toISOString() }
+          : p
+      )
+    );
+  }, [resumeText, jobDescription, targetRole, activeProfileId]);
 
   // Accessible Toast Notification (announced via aria-live)
   const showToast = (msg: string) => {
@@ -128,6 +178,82 @@ export const App: React.FC = () => {
   const analysis = useMemo(() => {
     return runAtsAnalysis(jobDescription, resumeText, tailorMode);
   }, [jobDescription, resumeText, tailorMode]);
+
+  // Auto-initialize baseline snapshot if none exists
+  useEffect(() => {
+    if (!baseline && resumeText) {
+      const initialSnapshot: BaselineSnapshot = {
+        id: `baseline-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        resumeText,
+        overallScore: analysis.overall,
+        skillsFound: analysis.skills.found,
+        verbsScore: analysis.verbs.score,
+        proofScore: analysis.proof.score,
+      };
+      setBaseline(initialSnapshot);
+      saveBaselineSnapshot(initialSnapshot);
+    }
+  }, []);
+
+  const handleSetBaseline = () => {
+    const snapshot: BaselineSnapshot = {
+      id: `baseline-${Date.now()}`,
+      timestamp: new Date().toISOString(),
+      resumeText,
+      overallScore: analysis.overall,
+      skillsFound: analysis.skills.found,
+      verbsScore: analysis.verbs.score,
+      proofScore: analysis.proof.score,
+    };
+    setBaseline(snapshot);
+    saveBaselineSnapshot(snapshot);
+    showToast(`Baseline snapshot captured at ${analysis.overall}% ATS score.`);
+  };
+
+  const handleRestoreBaseline = () => {
+    if (!baseline) return;
+    setResumeText(baseline.resumeText);
+    showToast(`Reverted resume text to baseline snapshot.`);
+  };
+
+  // Profile Management Handlers
+  const handleSelectProfile = (id: string) => {
+    const prof = profiles.find(p => p.id === id);
+    if (!prof) return;
+    setActiveProfileId(id);
+    setResumeText(prof.resumeText);
+    setJobDescription(prof.jobDescription);
+    setTargetRole(prof.targetRole);
+    showToast(`Switched to profile "${prof.name}".`);
+  };
+
+  const handleCreateProfile = (name: string) => {
+    const newProf: ResumeProfile = {
+      id: `profile-${Date.now()}`,
+      name,
+      targetRole,
+      resumeText,
+      jobDescription,
+      updatedAt: new Date().toISOString(),
+    };
+    setProfiles(prev => [newProf, ...prev]);
+    setActiveProfileId(newProf.id);
+    showToast(`Created new profile "${name}".`);
+  };
+
+  const handleDeleteProfile = (id: string) => {
+    if (profiles.length <= 1) {
+      showToast('Cannot delete the last remaining profile.');
+      return;
+    }
+    const remaining = profiles.filter(p => p.id !== id);
+    setProfiles(remaining);
+    if (activeProfileId === id) {
+      handleSelectProfile(remaining[0].id);
+    }
+    showToast('Profile removed.');
+  };
 
   // Detect Quality Audits
   const qualityIssues = useMemo(() => {
@@ -280,6 +406,34 @@ export const App: React.FC = () => {
             />
           </div>
 
+          {/* Profile Switcher & Actions Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-slate-900/75 border border-white/10 backdrop-blur-xl shadow-lg">
+            <div className="flex flex-wrap items-center gap-3">
+              <ProfileManager
+                profiles={profiles}
+                activeProfileId={activeProfileId}
+                onSelectProfile={handleSelectProfile}
+                onCreateProfile={handleCreateProfile}
+                onDeleteProfile={handleDeleteProfile}
+                currentRole={targetRole}
+              />
+              <span className="hidden sm:inline text-xs text-slate-300">
+                • Target: <strong className="text-lime-300">{targetRole}</strong>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShowAtsPdfModal(true)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-cyan-400/15 hover:bg-cyan-400/25 text-cyan-300 border border-cyan-400/30 text-xs font-bold transition cursor-pointer shadow-xs active:scale-95"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>ATS Resume Preview</span>
+              </button>
+            </div>
+          </div>
+
           {/* Section 2: Input Workspace */}
           <InputWorkspace
             jobDescription={jobDescription}
@@ -400,7 +554,16 @@ export const App: React.FC = () => {
             </div>
           </section>
 
-          {/* Section 4: STAR Bullet Rewriter Studio */}
+          {/* Section 4: Version & ATS Growth Delta */}
+          <VersionDiffViewer
+            currentResume={resumeText}
+            currentAnalysis={analysis}
+            baseline={baseline}
+            onSetBaseline={handleSetBaseline}
+            onRestoreBaseline={handleRestoreBaseline}
+          />
+
+          {/* Section 5: STAR Bullet Rewriter Studio */}
           <div id="feature-suite">
             <StarBulletOptimizer
               analysis={analysis}
@@ -408,7 +571,15 @@ export const App: React.FC = () => {
             />
           </div>
 
-          {/* Section 5: Resume Health Audits */}
+          {/* Section 6: AI Targeted Cover Letter Generator */}
+          <CoverLetterGenerator
+            targetRole={targetRole}
+            resumeText={resumeText}
+            jobDescription={jobDescription}
+            analysis={analysis}
+          />
+
+          {/* Section 7: Resume Health Audits */}
           <ResumeHealthSection
             analysis={analysis}
             issues={qualityIssues}
@@ -483,6 +654,16 @@ export const App: React.FC = () => {
         resumeText={resumeText}
         analysis={analysis}
         role={targetRole}
+        onOpenAtsPreview={() => setShowAtsPdfModal(true)}
+      />
+
+      {/* ATS-Optimized Print & Preview Modal */}
+      <AtsPdfPreviewModal
+        isOpen={showAtsPdfModal}
+        onClose={() => setShowAtsPdfModal(false)}
+        resumeText={resumeText}
+        role={targetRole}
+        analysis={analysis}
       />
     </div>
   );
