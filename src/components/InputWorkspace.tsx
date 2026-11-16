@@ -1,5 +1,18 @@
 import React, { useState } from 'react';
-import { Upload, X, FileCheck, ArrowRight, AlertCircle, Maximize2, ExternalLink, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
+import {
+  Upload,
+  X,
+  FileCheck,
+  ArrowRight,
+  AlertCircle,
+  Maximize2,
+  ExternalLink,
+  Sparkles,
+  Loader2,
+  CheckCircle2,
+  FileText,
+  Target
+} from 'lucide-react';
 import { countWords, countBullets } from '../utils/atsEngine';
 import { parseResumeFile } from '../utils/documentParser';
 import { JobDescriptionModal } from './JobDescriptionModal';
@@ -24,14 +37,14 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
   onRunAnalysis,
   isAnalyzing
 }) => {
+  const [activeTab, setActiveTab] = useState<'resume' | 'jd'>('resume');
   const [isDragging, setIsDragging] = useState(false);
   const [stagedFile, setStagedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
-  const [isJdModalOpen, setIsJdModalOpen] = useState(false);
-  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
-
   const [isParsingFile, setIsParsingFile] = useState(false);
   const [parseSuccessMsg, setParseSuccessMsg] = useState<string | null>(null);
+  const [isJdModalOpen, setIsJdModalOpen] = useState(false);
+  const [isResumeModalOpen, setIsResumeModalOpen] = useState(false);
 
   const jdWords = countWords(jobDescription);
   const resumeWords = countWords(resumeText);
@@ -54,13 +67,14 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
 
     setStagedFile(file);
     setIsParsingFile(true);
+    setActiveTab('resume'); // Switch directly to resume panel to show extracted text
 
     try {
       const parsed = await parseResumeFile(file);
       onResumeChange(parsed.text);
-      setParseSuccessMsg(`Successfully parsed ${parsed.wordCount} words from ${file.name}`);
+      setParseSuccessMsg(`Extracted ${parsed.wordCount} words from ${file.name}`);
     } catch (err: any) {
-      setFileError(err.message || 'Failed to parse file. Please try pasting raw text directly.');
+      setFileError(err.message || 'Failed to parse file. You can paste raw text directly into the editor.');
     } finally {
       setIsParsingFile(false);
     }
@@ -70,319 +84,291 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
     <section id="my-resume" aria-labelledby="inputs-heading" className="space-y-6 mb-10">
       <h2 id="inputs-heading" className="sr-only">Resume and Job Description Input Workspace</h2>
 
-      {/* 2-Column Input Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-        {/* Step 1: Job Description */}
-        <div className="rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-xl shadow-xl overflow-hidden flex flex-col justify-between group">
-          <div className="p-5 border-b border-white/[0.1] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span
-                className="w-7 h-7 rounded-lg bg-blue-500/20 text-blue-400 font-mono text-xs font-bold flex items-center justify-center border border-blue-500/40"
-                aria-hidden="true"
-              >
-                01
+      {/* Single Consolidated Input Panel */}
+      <div className="rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-xl shadow-2xl overflow-hidden flex flex-col justify-between group">
+        {/* Navigation Tabs Header */}
+        <div className="p-4 sm:p-5 border-b border-white/[0.1] flex flex-wrap items-center justify-between gap-4 bg-black/40">
+          {/* Tab Switcher */}
+          <div className="flex items-center gap-2 p-1 rounded-xl bg-black/60 border border-white/10" role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'resume'}
+              aria-controls="resume-tab-panel"
+              onClick={() => setActiveTab('resume')}
+              className={`min-h-[42px] px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+                activeTab === 'resume'
+                  ? 'bg-cyan-400/20 text-cyan-200 border border-cyan-400/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <FileText className="w-4 h-4 text-cyan-300" />
+              <span>Resume Document</span>
+              {stagedFile && (
+                <span className="hidden sm:inline-block w-2 h-2 rounded-full bg-lime-400" title="PDF Loaded" />
+              )}
+              <span className="font-mono text-[11px] opacity-80 hidden md:inline">
+                ({resumeWords} words)
               </span>
-              <div>
-                <h3 className="font-display text-base font-bold text-white tracking-tight">
-                  Target Job Description
-                </h3>
-                <p id="jd-desc" className="text-xs text-slate-300">
-                  Paste requirements, qualifications, and role responsibilities.
-                </p>
-              </div>
-            </div>
+            </button>
 
-            <div className="flex items-center gap-2">
-              <span
-                className="hidden sm:inline-flex font-mono text-xs text-slate-300 bg-black/50 px-2.5 py-1 rounded-md border border-white/[0.1]"
-                aria-live="polite"
-              >
-                {jdWords} words
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'jd'}
+              aria-controls="jd-tab-panel"
+              onClick={() => setActiveTab('jd')}
+              className={`min-h-[42px] px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+                activeTab === 'jd'
+                  ? 'bg-blue-500/25 text-blue-200 border border-blue-500/40 shadow-sm'
+                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <Target className="w-4 h-4 text-blue-400" />
+              <span>Target Job Description</span>
+              <span className="font-mono text-[11px] opacity-80 hidden md:inline">
+                ({jdWords} words)
               </span>
-
-              {/* Dedicated Interface Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setIsJdModalOpen(true)}
-                className="px-3 py-1.5 rounded-xl border border-blue-500/30 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 hover:text-blue-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
-                title="Open separate full-screen Job Description Studio"
-                aria-label="Open separate full-screen Job Description Studio"
-              >
-                <Maximize2 className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Dedicated Studio</span>
-              </button>
-            </div>
+            </button>
           </div>
 
-          <div className="p-5 space-y-3">
-            {/* Quick Click-to-open notice */}
-            <div
-              onClick={() => setIsJdModalOpen(true)}
-              className="px-3 py-2 rounded-xl border border-blue-500/20 bg-blue-500/[0.06] hover:bg-blue-500/[0.12] text-xs text-blue-300 flex items-center justify-between cursor-pointer transition"
-              title="Click to open separate full-screen interface"
-            >
-              <span className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-blue-400" />
-                <span>Need focused editing? Click to open full Job Description interface</span>
-              </span>
-              <ExternalLink className="w-3.5 h-3.5 text-blue-400 shrink-0" />
-            </div>
-
-            <label htmlFor="jd-textarea" className="sr-only">
-              Job Description Text
-            </label>
-            <textarea
-              id="jd-textarea"
-              value={jobDescription}
-              onChange={(e) => onJobDescriptionChange(e.target.value)}
-              aria-describedby="jd-desc"
-              placeholder="Paste target job posting or requirements here, or click Dedicated Studio above..."
-              className="w-full min-h-[200px] p-4 rounded-xl bg-black/60 border border-white/15 text-sm sm:text-xs text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-y"
+          {/* Right Action Tools */}
+          <div className="flex items-center gap-2">
+            {/* Hidden file input */}
+            <input
+              id="header-file-upload-input"
+              type="file"
+              accept=".pdf,.docx,.doc,.txt,.md"
+              onChange={(e) => handleFileUpload(e.target.files?.[0])}
+              className="sr-only"
+              aria-label="Upload resume PDF or document"
             />
 
-            <div className="flex items-center justify-between text-xs text-slate-300">
-              <span>{jdWords > 0 ? `${jdWords} words analyzed` : 'Paste requirements or bullet points for highest scoring accuracy.'}</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsJdModalOpen(true)}
-                  className="text-blue-400 hover:text-blue-300 font-semibold cursor-pointer underline underline-offset-2"
-                >
-                  Full Editor
-                </button>
-                {jobDescription.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => onJobDescriptionChange('')}
-                    className="min-h-[36px] px-2 text-slate-400 hover:text-white transition font-medium cursor-pointer"
-                    aria-label="Clear job description text"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-            </div>
+            {/* Quick Upload Button */}
+            <label
+              htmlFor="header-file-upload-input"
+              className="min-h-[38px] px-3.5 py-1.5 rounded-xl border border-lime-400/30 bg-lime-400/10 hover:bg-lime-400/20 text-lime-300 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+              title="Upload PDF, DOCX, or TXT"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Upload PDF</span>
+            </label>
+
+            {/* Dedicated Interface Trigger Button */}
+            <button
+              type="button"
+              onClick={() => activeTab === 'resume' ? setIsResumeModalOpen(true) : setIsJdModalOpen(true)}
+              className="min-h-[38px] px-3.5 py-1.5 rounded-xl border border-white/15 bg-white/[0.06] hover:bg-white/[0.12] text-slate-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+              title="Open full-screen modal"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Studio</span>
+            </button>
           </div>
         </div>
 
-        {/* Step 2: Resume Evidence */}
-        <div className="rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-xl shadow-xl overflow-hidden flex flex-col justify-between group">
-          <div className="p-5 border-b border-white/[0.1] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <span
-                className="w-7 h-7 rounded-lg bg-cyan-400/20 text-cyan-300 font-mono text-xs font-bold flex items-center justify-center border border-cyan-400/40"
-                aria-hidden="true"
-              >
-                02
-              </span>
-              <div>
-                <h3 className="font-display text-base font-bold text-white tracking-tight">
-                  Your Resume Text
-                </h3>
-                <p id="resume-desc" className="text-xs text-slate-300">
-                  Paste resume text, projects, or work achievements.
-                </p>
-              </div>
+        {/* Panel Content Body */}
+        <div className="p-5 sm:p-6 space-y-4">
+          {/* Error Notification */}
+          {fileError && (
+            <div
+              role="alert"
+              className="p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs flex items-center gap-2 animate-in fade-in"
+            >
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" aria-hidden="true" />
+              <span>{fileError}</span>
             </div>
+          )}
 
-            <div className="flex items-center gap-2">
+          {/* Success Notification */}
+          {parseSuccessMsg && (
+            <div
+              role="status"
+              className="p-3.5 rounded-xl bg-lime-400/15 border border-lime-400/30 text-lime-200 text-xs flex items-center justify-between gap-2 animate-in fade-in"
+            >
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-lime-400 shrink-0" aria-hidden="true" />
+                <span>{parseSuccessMsg}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setParseSuccessMsg(null)}
+                className="text-slate-400 hover:text-white text-xs"
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
+
+          {/* TAB 1: RESUME DOCUMENT PANEL */}
+          {activeTab === 'resume' && (
+            <div id="resume-tab-panel" role="tabpanel" aria-labelledby="resume-tab" className="space-y-4">
+              {/* Compact Drag & Drop Zone */}
               <div
-                className="hidden sm:flex items-center gap-2 font-mono text-xs text-slate-300 bg-black/50 px-2.5 py-1 rounded-md border border-white/[0.1]"
-                aria-live="polite"
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  setIsDragging(false);
+                  handleFileUpload(e.dataTransfer.files?.[0]);
+                }}
+                className={`border-2 border-dashed rounded-xl p-4 text-center transition ${
+                  isDragging
+                    ? 'border-lime-400 bg-lime-400/[0.08]'
+                    : stagedFile
+                    ? 'border-cyan-400/40 bg-cyan-400/[0.04]'
+                    : 'border-white/15 hover:border-white/30 bg-black/30'
+                }`}
               >
-                <span>{resumeBullets} bullets</span>
-                <span>•</span>
-                <span>{resumeWords} words</span>
-              </div>
-
-              {/* Dedicated Interface Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setIsResumeModalOpen(true)}
-                className="px-3 py-1.5 rounded-xl border border-cyan-400/30 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-300 hover:text-cyan-200 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
-                title="Open separate full-screen Resume Studio"
-                aria-label="Open separate full-screen Resume Studio"
-              >
-                <Maximize2 className="w-3.5 h-3.5" aria-hidden="true" />
-                <span>Dedicated Studio</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="p-5 space-y-3">
-            {/* Quick Click-to-open notice */}
-            <div
-              onClick={() => setIsResumeModalOpen(true)}
-              className="px-3 py-2 rounded-xl border border-cyan-400/20 bg-cyan-400/[0.06] hover:bg-cyan-400/[0.12] text-xs text-cyan-300 flex items-center justify-between cursor-pointer transition"
-              title="Click to open separate full-screen interface"
-            >
-              <span className="flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Want section starters & STAR templates? Click to open full Resume interface</span>
-              </span>
-              <ExternalLink className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-            </div>
-
-            <label htmlFor="resume-textarea" className="sr-only">
-              Resume Evidence Text
-            </label>
-            <textarea
-              id="resume-textarea"
-              value={resumeText}
-              onChange={(e) => onResumeChange(e.target.value)}
-              aria-describedby="resume-desc"
-              placeholder="Paste your current resume bullets or full text, or click Dedicated Studio above..."
-              className="w-full min-h-[200px] p-4 rounded-xl bg-black/60 border border-white/15 text-sm sm:text-xs text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-y"
-            />
-
-            <div className="flex items-center justify-between text-xs text-slate-300">
-              <span className="text-cyan-300 font-semibold">✓ Markdown & plain text supported</span>
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsResumeModalOpen(true)}
-                  className="text-cyan-300 hover:text-cyan-200 font-semibold cursor-pointer underline underline-offset-2"
-                >
-                  Full Editor
-                </button>
-                {resumeText.length > 0 && (
-                  <button
-                    type="button"
-                    onClick={() => onResumeChange('')}
-                    className="min-h-[36px] px-2 text-slate-400 hover:text-white transition font-medium cursor-pointer"
-                    aria-label="Clear resume text"
-                  >
-                    Clear
-                  </button>
+                {isParsingFile ? (
+                  <div className="flex items-center justify-center gap-2.5 py-1 text-cyan-300">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-xs font-bold">Extracting resume text from document...</span>
+                  </div>
+                ) : stagedFile ? (
+                  <div className="flex flex-wrap items-center justify-between gap-3 text-left">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-400/20 border border-cyan-400/30 flex items-center justify-center text-cyan-300">
+                        <FileCheck className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="text-xs font-bold text-white block">{stagedFile.name}</span>
+                        <span className="text-[11px] text-slate-400">
+                          {(stagedFile.size / (1024 * 1024)).toFixed(2)} MB • Content displayed below in editor
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <label
+                        htmlFor="header-file-upload-input"
+                        className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-semibold text-white cursor-pointer transition"
+                      >
+                        Upload Another
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStagedFile(null);
+                          setParseSuccessMsg(null);
+                        }}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 transition cursor-pointer"
+                        title="Remove file label"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <label htmlFor="header-file-upload-input" className="cursor-pointer flex items-center justify-center gap-3 py-1">
+                    <Upload className="w-4 h-4 text-slate-300" />
+                    <span className="text-xs font-semibold text-slate-200">
+                      Drop a PDF or DOCX file here to extract your resume directly into this panel
+                    </span>
+                    <span className="text-[11px] font-mono text-slate-400 bg-white/10 px-2 py-0.5 rounded">
+                      Browse
+                    </span>
+                  </label>
                 )}
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      {/* Step 3: Document File Dropzone */}
-      <div className="rounded-2xl border border-white/[0.12] bg-slate-900/75 p-6 backdrop-blur-xl shadow-xl">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-          <div className="flex items-center gap-3">
-            <span
-              className="w-7 h-7 rounded-lg bg-violet-400/20 text-violet-300 font-mono text-xs font-bold flex items-center justify-center border border-violet-400/40"
-              aria-hidden="true"
-            >
-              03
-            </span>
-            <div>
-              <h3 className="font-display text-sm font-bold text-white tracking-tight">
-                Upload Resume Document (PDF, DOCX, TXT)
-              </h3>
-              <p className="text-xs text-slate-300">
-                Prefer uploading a file? Drop it here to parse into the editor.
-              </p>
-            </div>
-          </div>
-          <span className="text-xs font-mono text-slate-300 uppercase tracking-wider bg-black/50 px-3 py-1 rounded border border-white/[0.1]">
-            Max 10 MB
-          </span>
-        </div>
-
-        {fileError && (
-          <div
-            role="alert"
-            className="mb-4 p-3.5 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs flex items-center gap-2"
-          >
-            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" aria-hidden="true" />
-            <span>{fileError}</span>
-          </div>
-        )}
-
-        {parseSuccessMsg && (
-          <div
-            role="status"
-            className="mb-4 p-3.5 rounded-xl bg-lime-400/15 border border-lime-400/30 text-lime-200 text-xs flex items-center gap-2"
-          >
-            <CheckCircle2 className="w-4 h-4 text-lime-400 shrink-0" aria-hidden="true" />
-            <span>{parseSuccessMsg}</span>
-          </div>
-        )}
-
-        <div
-          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-          onDragLeave={() => setIsDragging(false)}
-          onDrop={(e) => {
-            e.preventDefault();
-            setIsDragging(false);
-            handleFileUpload(e.dataTransfer.files?.[0]);
-          }}
-          className={`border-2 border-dashed rounded-xl p-6 text-center transition ${
-            isDragging
-              ? 'border-lime-400 bg-lime-400/[0.08]'
-              : stagedFile
-              ? 'border-cyan-400/50 bg-cyan-400/[0.05]'
-              : 'border-white/20 hover:border-white/30 bg-black/40'
-          }`}
-        >
-          <input
-            id="file-upload-input"
-            type="file"
-            accept=".pdf,.docx,.doc,.txt,.md"
-            onChange={(e) => handleFileUpload(e.target.files?.[0])}
-            className="sr-only"
-            aria-label="Upload resume file"
-          />
-
-          {isParsingFile ? (
-            <div className="flex flex-col items-center justify-center py-4 text-center">
-              <Loader2 className="w-8 h-8 text-cyan-400 animate-spin mb-2" />
-              <span className="text-sm font-bold text-white">Extracting text from document...</span>
-              <span className="text-xs text-slate-400 mt-1">Reading sections and formatting into editor</span>
-            </div>
-          ) : stagedFile ? (
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3 text-left">
-                <div
-                  className="w-10 h-10 rounded-xl bg-cyan-400/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300"
-                  aria-hidden="true"
-                >
-                  <FileCheck className="w-5 h-5" />
+              {/* Textarea for Resume */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-slate-300">
+                  <span className="font-semibold text-cyan-300">
+                    {stagedFile ? `Content from ${stagedFile.name}` : 'Resume Text & Bullet Points'}
+                  </span>
+                  <div className="flex items-center gap-3 font-mono text-[11px]">
+                    <span>{resumeBullets} bullets</span>
+                    <span>•</span>
+                    <span>{resumeWords} words</span>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="text-sm font-bold text-white">{stagedFile.name}</h4>
-                  <p className="text-xs text-slate-300">
-                    {(stagedFile.size / (1024 * 1024)).toFixed(2)} MB • Document successfully parsed into workspace
-                  </p>
-                </div>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <label
-                  htmlFor="file-upload-input"
-                  className="min-h-[44px] px-4 py-2 rounded-xl bg-white/[0.1] hover:bg-white/[0.2] text-xs font-semibold text-white cursor-pointer transition flex items-center"
-                >
-                  Change File
+                <label htmlFor="resume-textarea" className="sr-only">
+                  Resume Evidence Text
                 </label>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStagedFile(null);
-                    setParseSuccessMsg(null);
-                  }}
-                  className="min-h-[44px] min-w-[44px] p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer flex items-center justify-center"
-                  aria-label="Remove uploaded file"
-                >
-                  <X className="w-5 h-5" aria-hidden="true" />
-                </button>
+                <textarea
+                  id="resume-textarea"
+                  value={resumeText}
+                  onChange={(e) => onResumeChange(e.target.value)}
+                  placeholder="Drop a PDF resume above or paste your resume bullet points and achievements here..."
+                  className="w-full min-h-[260px] p-4 rounded-xl bg-black/60 border border-white/15 text-sm sm:text-xs text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 resize-y"
+                />
+
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+                  <span>Markdown & plain text supported</span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsResumeModalOpen(true)}
+                      className="text-cyan-300 hover:text-cyan-200 font-semibold cursor-pointer underline underline-offset-2"
+                    >
+                      Open Full Studio
+                    </button>
+                    {resumeText.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => onResumeChange('')}
+                        className="text-slate-400 hover:text-white transition font-medium cursor-pointer"
+                        aria-label="Clear resume text"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          ) : (
-            <label htmlFor="file-upload-input" className="cursor-pointer block py-2">
-              <Upload className="w-8 h-8 text-slate-300 mx-auto mb-2" aria-hidden="true" />
-              <span className="text-sm font-bold text-white block">
-                Click to browse or drag & drop your resume file here
-              </span>
-              <span className="text-xs text-slate-300 mt-1 block">
-                Supports PDF, DOCX, TXT, and Markdown documents with instant client-side parsing
-              </span>
-            </label>
+          )}
+
+          {/* TAB 2: TARGET JOB DESCRIPTION PANEL */}
+          {activeTab === 'jd' && (
+            <div id="jd-tab-panel" role="tabpanel" aria-labelledby="jd-tab" className="space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-slate-300">
+                  <span className="font-semibold text-blue-400">
+                    Target Job Description & Role Requirements
+                  </span>
+                  <div className="flex items-center gap-2 font-mono text-[11px]">
+                    <span>{jdWords} words</span>
+                  </div>
+                </div>
+
+                <label htmlFor="jd-textarea" className="sr-only">
+                  Job Description Text
+                </label>
+                <textarea
+                  id="jd-textarea"
+                  value={jobDescription}
+                  onChange={(e) => onJobDescriptionChange(e.target.value)}
+                  placeholder="Paste the target job posting, qualifications, tech stack requirements, and responsibilities here..."
+                  className="w-full min-h-[280px] p-4 rounded-xl bg-black/60 border border-white/15 text-sm sm:text-xs text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400 resize-y"
+                />
+
+                <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+                  <span>Used by ATS engine to compute keyword signals & gap map</span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setIsJdModalOpen(true)}
+                      className="text-blue-400 hover:text-blue-300 font-semibold cursor-pointer underline underline-offset-2"
+                    >
+                      Open Full Studio
+                    </button>
+                    {jobDescription.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={() => onJobDescriptionChange('')}
+                        className="text-slate-400 hover:text-white transition font-medium cursor-pointer"
+                        aria-label="Clear job description text"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>
