@@ -373,7 +373,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
               ? 'bg-slate-800 text-slate-400 cursor-not-allowed border border-white/10'
               : 'bg-lime-400 text-slate-950 hover:bg-lime-300 shadow-[0_0_30px_rgba(163,230,53,0.3)]'
           }`}
-          aria-label="Run clear ATS and compatibility analysis"
+          aria-label="Run match analysis"
         >
           {isAnalyzing ? (
             <>
@@ -385,7 +385,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
             </>
           ) : (
             <>
-              <span>Run Clear ATS & Compatibility Analysis</span>
+              <span>Run match analysis</span>
               <ArrowRight className="w-5 h-5" aria-hidden="true" />
             </>
           )}

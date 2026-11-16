@@ -3,6 +3,8 @@ import { PRESETS } from './data/presets';
 import { runAtsAnalysis, detectQualityIssues, generateInterviewQuestions } from './utils/atsEngine';
 import { JobApplication, TailorMode, QualityIssue } from './types';
 import { ProfileSettings } from './components/ProfileSettings';
+import { AnimatedRays } from './components/ui/animated-rays';
+import { SplashScreen } from './components/SplashScreen';
 
 // Components
 import { Header } from './components/Header';
@@ -10,6 +12,7 @@ import { Sidebar } from './components/Sidebar';
 import { HeroSection } from './components/HeroSection';
 import { InputWorkspace } from './components/InputWorkspace';
 import { ScoreRing } from './components/ScoreRing';
+import { ScoreExplainer } from './components/ScoreExplainer';
 import { SignalGraph } from './components/SignalGraph';
 import { VocabularyGapMap } from './components/VocabularyGapMap';
 import { StarBulletOptimizer } from './components/StarBulletOptimizer';
@@ -18,6 +21,7 @@ import { ResumeEditorLivePreview } from './components/ResumeEditorLivePreview';
 import { InterviewPrepRadar } from './components/InterviewPrepRadar';
 import { ApplicationTracker } from './components/ApplicationTracker';
 import { ExportModal } from './components/ExportModal';
+import { Reveal } from './components/Reveal';
 
 import { Sparkles, ShieldCheck, Sliders } from 'lucide-react';
 
@@ -162,7 +166,7 @@ export const App: React.FC = () => {
     setIsAnalyzing(true);
     setTimeout(() => {
       setIsAnalyzing(false);
-      showToast('ATS Compatibility Analysis refreshed with latest evidence!');
+      showToast('Match analysis refreshed.');
     }, 450);
   };
 
@@ -212,6 +216,7 @@ export const App: React.FC = () => {
 
   return (
     <div className={`min-h-screen ${isDark ? 'dark bg-[#070c18] text-slate-100 selection:bg-lime-400 selection:text-slate-950' : 'light bg-slate-50 text-slate-900 selection:bg-indigo-500 selection:text-white'} font-sans transition-colors duration-200`}>
+      <SplashScreen />
       {/* Ambient background glow orbs - active in dark mode only */}
       {isDark && (
         <>
@@ -271,35 +276,45 @@ export const App: React.FC = () => {
               : 'max-w-[1880px] px-6 sm:px-12 lg:px-16 enlarged-workspace'
           }`}
         >
-          <ProfileSettings />
+          <Reveal>
+            <ProfileSettings />
+          </Reveal>
           {/* Section 1: Hero & Role Presets */}
-          <div id="dashboard">
-            <HeroSection
-              selectedPreset={selectedPresetId}
-              onSelectPreset={handleSelectPreset}
-              showHowItWorks={showHowItWorks}
-              onToggleHowItWorks={() => setShowHowItWorks(v => !v)}
-            />
-          </div>
+          <Reveal>
+            <div className="relative isolate overflow-hidden rounded-3xl">
+              <AnimatedRays className="absolute inset-0 pointer-events-none" />
+              <div className="relative z-10">
+                <HeroSection
+                  selectedPreset={selectedPresetId}
+                  onSelectPreset={handleSelectPreset}
+                  showHowItWorks={showHowItWorks}
+                  onToggleHowItWorks={() => setShowHowItWorks(v => !v)}
+                />
+              </div>
+            </div>
+          </Reveal>
 
           {/* Section 2: Input Workspace */}
-          <InputWorkspace
-            jobDescription={jobDescription}
-            onJobDescriptionChange={setJobDescription}
-            resumeText={resumeText}
-            onResumeChange={setResumeText}
-            targetRole={targetRole}
-            onTargetRoleChange={setTargetRole}
-            onRunAnalysis={handleRunAnalysis}
-            isAnalyzing={isAnalyzing}
-          />
+          <Reveal>
+            <InputWorkspace
+              jobDescription={jobDescription}
+              onJobDescriptionChange={setJobDescription}
+              resumeText={resumeText}
+              onResumeChange={setResumeText}
+              targetRole={targetRole}
+              onTargetRoleChange={setTargetRole}
+              onRunAnalysis={handleRunAnalysis}
+              isAnalyzing={isAnalyzing}
+            />
+          </Reveal>
 
           {/* Section 3: ATS Score Breakdown & Signal Matrix */}
-          <section id="ats-analysis" aria-labelledby="matrix-heading" className="space-y-6">
+          <Reveal>
+            <section id="ats-analysis" aria-labelledby="matrix-heading" className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.1]">
               <div>
                 <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lime-300 font-bold">
-                  <span>ATS Evidence Framework</span>
+                  <span>Evidence-based estimate</span>
                   <span className="text-white/20">•</span>
                   <span>Transparent Scoring</span>
                 </div>
@@ -395,86 +410,101 @@ export const App: React.FC = () => {
               </div>
             </div>
 
+            <ScoreExplainer analysis={analysis} />
+
             {/* Signal Balance Graph + Keyword Gap Matrix */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <SignalGraph analysis={analysis} />
               <VocabularyGapMap analysis={analysis} onAddKeyword={handleAddKeyword} />
             </div>
-          </section>
+            </section>
+          </Reveal>
 
           {/* Section 4: STAR Bullet Rewriter Studio */}
-          <div id="feature-suite">
-            <StarBulletOptimizer
-              analysis={analysis}
-              onApplyBullet={handleApplyBullet}
-            />
-          </div>
+          <Reveal>
+            <div id="feature-suite">
+              <StarBulletOptimizer
+                analysis={analysis}
+                onApplyBullet={handleApplyBullet}
+              />
+            </div>
+          </Reveal>
 
           {/* Section 5: Resume Health Audits */}
-          <ResumeHealthSection
-            analysis={analysis}
-            issues={qualityIssues}
-            jobDescription={jobDescription}
-            onFixIssue={handleFixIssue}
-          />
+          <Reveal>
+            <ResumeHealthSection
+              analysis={analysis}
+              issues={qualityIssues}
+              jobDescription={jobDescription}
+              onFixIssue={handleFixIssue}
+            />
+          </Reveal>
 
           {/* Section 6: Live Editor & Real Rendered ATS Preview */}
-          <ResumeEditorLivePreview
-            resumeText={resumeText}
-            onResumeChange={setResumeText}
-            analysis={analysis}
-            targetRole={targetRole}
-          />
+          <Reveal>
+            <ResumeEditorLivePreview
+              resumeText={resumeText}
+              onResumeChange={setResumeText}
+              analysis={analysis}
+              targetRole={targetRole}
+            />
+          </Reveal>
 
           {/* Section 7: Interview Prep Radar */}
-          <InterviewPrepRadar
-            questions={interviewQuestions}
-            onCopyAll={(qs) => {
-              const text = qs.map((q, i) => `${i + 1}. [${q.category}] ${q.question}\nSuggested Track: ${q.answer}\n`).join('\n');
-              navigator.clipboard.writeText(text);
-              showToast('All mock interview questions copied to clipboard!');
-            }}
-          />
+          <Reveal>
+            <InterviewPrepRadar
+              questions={interviewQuestions}
+              onCopyAll={(qs) => {
+                const text = qs.map((q, i) => `${i + 1}. [${q.category}] ${q.question}\nSuggested Track: ${q.answer}\n`).join('\n');
+                navigator.clipboard.writeText(text);
+                showToast('All mock interview questions copied to clipboard!');
+              }}
+            />
+          </Reveal>
 
           {/* Section 8: Applications Pipeline Tracker */}
-          <ApplicationTracker
-            applications={applications}
-            onAddApplication={(newApp) => {
-              const item: JobApplication = {
-                id: `app-${Date.now()}`,
-                dateAdded: new Date().toISOString().split('T')[0],
-                ...newApp
-              };
-              setApplications(prev => [item, ...prev]);
-              showToast(`Application for ${newApp.company} added!`);
-            }}
-            onDeleteApplication={(id) => {
-              setApplications(prev => prev.filter(a => a.id !== id));
-              showToast('Application removed.');
-            }}
-            onUpdateStatus={(id, st) => {
-              setApplications(prev => prev.map(a => a.id === id ? { ...a, status: st } : a));
-              showToast(`Status updated to ${st}.`);
-            }}
-          />
+          <Reveal>
+            <ApplicationTracker
+              applications={applications}
+              onAddApplication={(newApp) => {
+                const item: JobApplication = {
+                  id: `app-${Date.now()}`,
+                  dateAdded: new Date().toISOString().split('T')[0],
+                  ...newApp
+                };
+                setApplications(prev => [item, ...prev]);
+                showToast(`Application for ${newApp.company} added!`);
+              }}
+              onDeleteApplication={(id) => {
+                setApplications(prev => prev.filter(a => a.id !== id));
+                showToast('Application removed.');
+              }}
+              onUpdateStatus={(id, st) => {
+                setApplications(prev => prev.map(a => a.id === id ? { ...a, status: st } : a));
+                showToast(`Status updated to ${st}.`);
+              }}
+            />
+          </Reveal>
 
           {/* Semantic Footer */}
-          <footer
-            role="contentinfo"
-            className="pt-8 pb-12 border-t border-white/[0.1] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300"
-          >
-            <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-lime-400" aria-hidden="true" />
-              <span>ResumeSynth Pro · Clear ATS Scoring & Intelligent AI Tailoring</span>
-            </div>
-            <div className="flex items-center gap-4 font-mono text-xs text-slate-300">
-              <span>Local Session Safe</span>
-              <span>•</span>
-              <span>WCAG AA Compliant</span>
-              <span>•</span>
-              <span>© 2026 ResumeSynth</span>
-            </div>
-          </footer>
+          <Reveal>
+            <footer
+              role="contentinfo"
+              className="pt-8 pb-12 border-t border-white/[0.1] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300"
+            >
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4 text-lime-400" aria-hidden="true" />
+                <span>ResumeSynth Pro · Honest match scoring & evidence-based tailoring</span>
+              </div>
+              <div className="flex items-center gap-4 font-mono text-xs text-slate-300">
+                <span>Local Session Safe</span>
+                <span>•</span>
+                <span>WCAG AA Compliant</span>
+                <span>•</span>
+                <span>© 2026 ResumeSynth</span>
+              </div>
+            </footer>
+          </Reveal>
         </div>
       </main>
 

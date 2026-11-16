@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@keyframes aurora-bg {
+  from {
+    background-position: 0% 50%, 0% 50%;
+  }
+  to {
+    background-position: 200% 50%, 200% 50%;
+  }
+}
+
+.animate-aurora-bg {
+  animation: aurora-bg 30s linear infinite;
+}
+
 @layer base {
   :root {
     --bg-main: #070c18;
@@ -808,4 +821,3 @@ body.light,
 .light .signal-inspector-card span {
   color: #1e293b !important;
 }
-

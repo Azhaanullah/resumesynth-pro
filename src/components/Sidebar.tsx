@@ -17,7 +17,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const navItems = [
     { id: 'dashboard', label: 'Overview Dashboard', icon: LayoutDashboard },
     { id: 'my-resume', label: 'Inputs & File Upload', icon: FileText },
-    { id: 'ats-analysis', label: 'ATS Signal Analysis', icon: BarChart2 },
+    { id: 'ats-analysis', label: 'Match breakdown', icon: BarChart2 },
     { id: 'feature-suite', label: 'STAR Bullet Rewriter', icon: Wand2 },
     { id: 'resume-editor', label: 'Resume Editor & Preview', icon: Edit3 },
     { id: 'resume-health', label: 'Quality & Health', icon: ShieldCheck },

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useId, useState } from 'react';
 import { CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
+import { CountUp } from './CountUp';
 
 interface ScoreRingProps {
   score: number;
@@ -12,33 +13,42 @@ interface ScoreRingProps {
 export const ScoreRing: React.FC<ScoreRingProps> = ({
   score,
   size = 180,
-  strokeWidth = 10,
-  label = "out of 100",
+  strokeWidth = 12,
+  label = 'out of 100',
   showStatus = true
 }) => {
+  const safeScore = Math.max(0, Math.min(100, score));
+  const gradientId = `ring-${useId().replace(/:/g, '')}`;
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setShown(safeScore));
+    return () => cancelAnimationFrame(id);
+  }, [safeScore]);
+
   const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (score / 100) * circumference;
+  const strokeDashoffset = circumference - (shown / 100) * circumference;
 
-  let strokeColor = "var(--score-strong, #a3e635)";
-  let statusText = "Strong Match";
-  let statusBadgeClass = "bg-lime-400/15 text-lime-300 border-lime-400/30 score-badge-strong";
+  let strokeColor = 'var(--score-strong, #30d158)';
+  let statusText = 'Strong Match';
+  let statusBadgeClass = 'bg-lime-400/15 text-lime-300 border-lime-400/30 score-badge-strong';
   let StatusIcon = CheckCircle2;
 
-  if (score < 60) {
-    strokeColor = "var(--score-low, #f43f5e)";
-    statusText = "Significant Gaps";
-    statusBadgeClass = "bg-rose-400/15 text-rose-200 border-rose-400/30 score-badge-low";
+  if (safeScore < 60) {
+    strokeColor = 'var(--score-low, #ff453a)';
+    statusText = 'Significant Gaps';
+    statusBadgeClass = 'bg-rose-400/15 text-rose-200 border-rose-400/30 score-badge-low';
     StatusIcon = AlertCircle;
-  } else if (score < 75) {
-    strokeColor = "var(--score-med, #facc15)";
-    statusText = "Needs Evidence";
-    statusBadgeClass = "bg-amber-400/15 text-amber-200 border-amber-400/30 score-badge-med";
+  } else if (safeScore < 75) {
+    strokeColor = 'var(--score-med, #ff9f0a)';
+    statusText = 'Needs Evidence';
+    statusBadgeClass = 'bg-amber-400/15 text-amber-200 border-amber-400/30 score-badge-med';
     StatusIcon = AlertTriangle;
-  } else if (score < 88) {
-    strokeColor = "var(--score-good, #38bdf8)";
-    statusText = "Good Match";
-    statusBadgeClass = "bg-sky-400/15 text-sky-200 border-sky-400/30 score-badge-good";
+  } else if (safeScore < 88) {
+    strokeColor = 'var(--score-good, #0a84ff)';
+    statusText = 'Good Match';
+    statusBadgeClass = 'bg-sky-400/15 text-sky-200 border-sky-400/30 score-badge-good';
     StatusIcon = CheckCircle2;
   }
 
@@ -47,53 +57,69 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
       className="relative flex flex-col items-center justify-center"
       style={{ width: size, height: size }}
       role="region"
-      aria-label={`Overall ATS score: ${score} percent, ${statusText}`}
+      aria-label={`Overall job match score (estimate): ${safeScore} out of 100, ${statusText}`}
     >
       <svg
-        className="absolute inset-0 -rotate-90 transition-all duration-700 ease-out"
+        className="absolute inset-0 -rotate-90"
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        role="img"
         aria-hidden="true"
       >
+        <defs>
+          <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: strokeColor, stopOpacity: 0.55 }} />
+            <stop offset="100%" style={{ stopColor: strokeColor, stopOpacity: 1 }} />
+          </linearGradient>
+        </defs>
+
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke="#1e293b"
+          stroke="rgba(255,255,255,0.09)"
           strokeWidth={strokeWidth}
           className="score-track"
         />
+
         <circle
           cx={size / 2}
           cy={size / 2}
           r={radius}
           fill="none"
-          stroke={strokeColor}
+          stroke={`url(#${gradientId})`}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={circumference}
           strokeDashoffset={strokeDashoffset}
-          className="transition-all duration-700 ease-out"
+          className="ap-ring-progress"
+          style={{
+            color: strokeColor,
+            transition: 'stroke-dashoffset 1.4s cubic-bezier(0.16, 1, 0.3, 1)'
+          }}
         />
       </svg>
 
-      {/* Center Score Display */}
       <div className="relative z-10 flex flex-col items-center text-center">
         <span
-          className="font-display text-4xl font-extrabold tracking-tight transition-all duration-500"
-          style={{ color: strokeColor }}
+          className="font-semibold leading-none tabular-nums"
+          style={{
+            color: strokeColor,
+            fontSize: Math.round(size * 0.31),
+            letterSpacing: '-0.05em'
+          }}
         >
-          {score}
+          <CountUp value={safeScore} />
         </span>
-        <span className="text-xs font-mono uppercase tracking-wider text-slate-300 mt-0.5 font-semibold">
+        <span className="mt-2 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-slate-400">
           {label}
         </span>
         {showStatus && (
-          <span className={`mt-2 inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${statusBadgeClass}`}>
-            <StatusIcon className="w-3 h-3" aria-hidden="true" />
+          <span
+            className={`mt-3 inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${statusBadgeClass}`}
+          >
+            <StatusIcon className="h-3 w-3" aria-hidden="true" />
             <span>{statusText}</span>
           </span>
         )}

@@ -96,7 +96,7 @@ export const Header: React.FC<HeaderProps> = ({
               href="#ats-analysis"
               className="hover:text-cyan-300 transition py-2 font-medium"
             >
-              ATS Score Matrix
+              Match breakdown
             </a>
             <a
               href="#interview-radar"

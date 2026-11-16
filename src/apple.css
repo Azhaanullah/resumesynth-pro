@@ -1,0 +1,494 @@
+/* =====================================================================
+   ResumeSynth · Premium Apple-style theme  (v2 — "Midnight & Champagne")
+   Import AFTER index.css (in main.tsx):  import './apple.css';
+
+   Palette lives in the tokens just below. Change those few values and the
+   whole site follows. Alternatives are listed under the tokens.
+
+   This file is un-layered CSS, so it beats Tailwind utilities without
+   !important. Where index.css uses !important (its light-mode block) we
+   match it with higher specificity.
+   To undo everything, delete the import line.
+   ===================================================================== */
+
+/* ---------- 1. PALETTE (dark = default) ---------- */
+:root {
+  --ap-font: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --ap-ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* base + surfaces: deep ink, never pure black or navy */
+  --ap-bg: #07080c;
+  --ap-surface: rgba(20, 22, 29, 0.74);
+  --ap-hairline: rgba(255, 255, 255, 0.07);
+
+  /* text: warm white + soft grey */
+  --ap-text: #f5f2ec;
+  --ap-text-2: #9b9ba6;
+
+  /* primary accent: champagne gold */
+  --ap-accent: #d8b46a;
+  --ap-accent-hi: #f2dea8;
+  --ap-accent-lo: #b98d3f;
+  --ap-accent-ink: #1a1405;      /* text that sits ON gold */
+  --ap-on-bg: #d8b46a;           /* selected chip background */
+  --ap-on-text: #1a1405;         /* selected chip text */
+
+  /* supporting colours */
+  --ap-emerald: #34c98f;
+  --ap-emerald-text: #7ee2b8;
+  --ap-c1: #8b9cff;              /* periwinkle */
+  --ap-c2: #c4a6ff;              /* soft violet */
+  --ap-c3: #e7c58a;              /* champagne */
+  --ap-grad-hero: linear-gradient(100deg, #f6e3b4 0%, #d6ab57 42%, #e9c98c 62%, #a9a2ff 100%);
+
+  --bg-main: #07080c;
+  --text-main: #f5f2ec;
+  --text-muted: #9b9ba6;
+
+  /* score ring (refined, slightly desaturated) */
+  --score-strong: #34c98f;
+  --score-good: #7aa2ff;
+  --score-med: #e8b75d;
+  --score-low: #f0707a;
+}
+
+/* Light mode = "Ivory & Ink" */
+html.light {
+  --ap-bg: #f6f3ee;
+  --ap-surface: #fffdf9;
+  --ap-hairline: rgba(23, 21, 26, 0.08);
+
+  --ap-text: #17151a;
+  --ap-text-2: #6b665f;
+
+  --ap-accent: #9a7226;
+  --ap-accent-hi: #c39a46;
+  --ap-accent-lo: #7a5a1c;
+  --ap-accent-ink: #fffdf9;
+  --ap-on-bg: #17151a;
+  --ap-on-text: #f6f3ee;
+
+  --ap-emerald: #1f9d6b;
+  --ap-emerald-text: #17805a;
+  --ap-c1: #4a4fc9;
+  --ap-c2: #7a52d1;
+  --ap-c3: #a67c2e;
+  --ap-grad-hero: linear-gradient(100deg, #7a5a1c 0%, #b8893c 45%, #4a4fc9 100%);
+
+  --bg-main: #f6f3ee;
+  --text-main: #17151a;
+  --text-muted: #6b665f;
+
+  --score-strong: #1f9d6b;
+  --score-good: #3b6fe0;
+  --score-med: #c9871a;
+  --score-low: #d94452;
+}
+
+/*  ALTERNATIVE DARK PALETTES — swap these values into :root above
+    ─ Obsidian & Sapphire : --ap-accent #7aa8ff  --ap-accent-hi #b6d0ff  --ap-accent-lo #4f7fe0
+                            --ap-accent-ink #07101f  --ap-on-bg #7aa8ff  --ap-on-text #07101f
+    ─ Graphite & Rose Gold: --ap-accent #e0a99a  --ap-accent-hi #f6d3c8  --ap-accent-lo #b9786a
+                            --ap-accent-ink #1f0f0b  --ap-on-bg #e0a99a  --ap-on-text #1f0f0b
+    (also update --ap-grad-hero and the gold rgba(216,180,106,…) values if you want a full switch) */
+
+/* ---------- 2. Canvas, type & ambient background ---------- */
+html.dark,
+html.dark body,
+body.dark {
+  background-color: var(--ap-bg) !important;
+}
+html.light,
+body.light {
+  background-color: var(--ap-bg) !important;
+}
+
+body,
+.font-sans {
+  font-family: var(--ap-font);
+  letter-spacing: -0.011em;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3 { letter-spacing: -0.03em; }
+
+/* The app root div hard-codes its own background — let ours show through */
+.dark.min-h-screen,
+.light.min-h-screen {
+  background-color: transparent;
+}
+
+/* Hide the old lime/cyan glow orbs */
+.dark .fixed.rounded-full[aria-hidden="true"] { display: none; }
+
+/* Soft indigo / champagne / emerald wash behind everything (dark only) */
+body.dark::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60vmax 40vmax at 50% -14%, rgba(99, 102, 241, 0.17), transparent 60%),
+    radial-gradient(50vmax 40vmax at 94% 16%, rgba(216, 180, 106, 0.08), transparent 60%),
+    radial-gradient(45vmax 35vmax at 3% 34%, rgba(52, 201, 143, 0.06), transparent 60%);
+  animation: ap-wash 24s ease-in-out infinite alternate;
+}
+@keyframes ap-wash {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(0, 2vmax, 0) scale(1.06); }
+}
+
+::selection { background: rgba(216, 180, 106, 0.32); }
+
+/* Focus rings */
+:focus-visible { outline: 2px solid #9a7226 !important; outline-offset: 3px !important; }
+.dark :focus-visible { outline: 2px solid #d8b46a !important; }
+
+/* Slim rounded scrollbars */
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border: 3px solid transparent; background-clip: padding-box; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.34); background-clip: padding-box; border: 3px solid transparent; }
+html.light ::-webkit-scrollbar-track { background: transparent; }
+html.light ::-webkit-scrollbar-thumb { background: rgba(23, 21, 26, 0.2); background-clip: padding-box; border: 3px solid transparent; }
+html.light ::-webkit-scrollbar-thumb:hover { background: rgba(23, 21, 26, 0.34); background-clip: padding-box; border: 3px solid transparent; }
+
+/* ---------- 3. Surfaces: header, sidebar, cards ---------- */
+.dark header[role="banner"] {
+  background-color: rgba(7, 8, 12, 0.62);
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(22px);
+  border-bottom: 1px solid var(--ap-hairline);
+}
+html.light header[role="banner"] {
+  background-color: rgba(246, 243, 238, 0.74) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(22px);
+  backdrop-filter: saturate(180%) blur(22px);
+  border-bottom: 1px solid var(--ap-hairline) !important;
+  box-shadow: none !important;
+}
+
+.dark #sidebar-navigation {
+  background-color: rgba(11, 12, 17, 0.78);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  border-right-color: var(--ap-hairline);
+}
+html.light #sidebar-navigation {
+  background-color: rgba(255, 253, 249, 0.78) !important;
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  border-right: 1px solid var(--ap-hairline) !important;
+  box-shadow: none !important;
+}
+
+/* Header buttons → quiet pills */
+.dark header .theme-toggle-btn,
+.dark header .sidebar-toggle-btn,
+.dark header button[title*="Reset"] {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--ap-hairline);
+  border-radius: 999px;
+}
+.dark header .theme-toggle-btn:hover,
+.dark header button[title*="Reset"]:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+/* Brand mark → champagne */
+.dark .header-brand-logo,
+.dark .sidebar-brand-avatar {
+  background: linear-gradient(135deg, rgba(216, 180, 106, 0.24), rgba(216, 180, 106, 0.08));
+  border-color: rgba(216, 180, 106, 0.42);
+  color: #f0d79b;
+}
+.dark .header-brand-accent { color: #e8c982; }
+
+/* Sidebar active item → champagne (instead of green) */
+.dark #sidebar-navigation button.bg-lime-400\/20,
+.dark #sidebar-navigation button.bg-lime-400\/20 svg,
+.dark #sidebar-navigation button.bg-lime-400\/20 span {
+  color: #f0d79b;
+}
+.dark #sidebar-navigation button.bg-lime-400\/20 {
+  background-color: rgba(216, 180, 106, 0.12);
+  border-color: rgba(216, 180, 106, 0.3);
+}
+
+/* Big content cards */
+.dark .rounded-2xl.border {
+  background-color: var(--ap-surface);
+  border-color: var(--ap-hairline);
+  border-radius: 24px;
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 48px -24px rgba(0, 0, 0, 0.75);
+}
+html.light div.rounded-2xl.border,
+html.light section.rounded-2xl,
+html.light article {
+  background-color: #fffdf9 !important;
+  border-color: var(--ap-hairline) !important;
+  border-radius: 24px;
+  box-shadow: 0 1px 2px rgba(23, 21, 26, 0.04), 0 18px 44px -18px rgba(23, 21, 26, 0.16) !important;
+}
+
+/* Profile settings bar → matching rounded card */
+section[aria-labelledby="profile-heading"] {
+  margin-bottom: 1.5rem;
+  padding: 1.1rem 1.5rem;
+  border: 1px solid var(--ap-hairline);
+  border-radius: 24px;
+  background-color: var(--ap-surface);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+}
+html.light section[aria-labelledby="profile-heading"] {
+  background-color: #fffdf9;
+  box-shadow: 0 1px 2px rgba(23, 21, 26, 0.04), 0 18px 44px -18px rgba(23, 21, 26, 0.16);
+}
+section[aria-labelledby="profile-heading"] .bg-indigo-600,
+#profile-form .bg-indigo-600 {
+  background-image: linear-gradient(180deg, var(--ap-accent-hi), var(--ap-accent-lo));
+  background-color: var(--ap-accent);
+  color: var(--ap-accent-ink);
+}
+section[aria-labelledby="profile-heading"] [class*="text-indigo"] { color: var(--ap-accent); }
+#profile-form .accent-indigo-600 { accent-color: var(--ap-accent); }
+
+/* Inputs */
+.dark textarea,
+.dark select,
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="url"] {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  transition: border-color 0.25s var(--ap-ease), box-shadow 0.25s var(--ap-ease), background-color 0.25s;
+}
+.dark textarea:focus,
+.dark select:focus,
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="url"]:focus {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: var(--ap-accent);
+  box-shadow: 0 0 0 4px rgba(216, 180, 106, 0.2);
+  outline: none !important;
+}
+html.light textarea,
+html.light select,
+html.light input[type="text"] {
+  border-color: rgba(23, 21, 26, 0.14) !important;
+  border-radius: 14px;
+}
+html.light textarea:focus,
+html.light select:focus,
+html.light input[type="text"]:focus {
+  border-color: #9a7226 !important;
+  box-shadow: 0 0 0 4px rgba(154, 114, 38, 0.18) !important;
+}
+
+/* Primary buttons → champagne-gold pills (dark) / ink pills (light).
+   background-image is reset because the old buttons used a gradient. */
+.dark .analyze-primary-btn,
+.dark .header-export-btn {
+  background-image: linear-gradient(180deg, #efd592 0%, #c9a24f 100%);
+  background-color: #d8b46a;
+  color: var(--ap-accent-ink);
+  border-color: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  font-weight: 600;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 12px 30px -12px rgba(216, 180, 106, 0.55);
+  transition: filter 0.25s, transform 0.25s var(--ap-ease), box-shadow 0.25s;
+}
+.dark .analyze-primary-btn:hover,
+.dark .header-export-btn:hover { filter: brightness(1.07); }
+html.light .analyze-primary-btn,
+html.light .header-export-btn {
+  background-image: none !important;
+  background-color: #17151a !important;
+  border-color: #17151a !important;
+  color: #f6f3ee !important;
+  border-radius: 999px;
+  box-shadow: 0 10px 26px -12px rgba(23, 21, 26, 0.5) !important;
+}
+html.light .analyze-primary-btn:hover,
+html.light .header-export-btn:hover { background-color: #2a2730 !important; }
+
+/* ---------- 4. Old lime accent → refined emerald (dark) ----------
+   Delete this block to keep the original lime. */
+.dark .text-lime-200,
+.dark .text-lime-300 { color: var(--ap-emerald-text); }
+.dark .text-lime-400 { color: var(--ap-emerald); }
+.dark .bg-lime-400 { background-color: var(--ap-emerald); }
+.dark .bg-lime-400\/10,
+.dark .bg-lime-400\/15,
+.dark .bg-lime-400\/20,
+.dark .bg-lime-400\/25 { background-color: rgba(52, 201, 143, 0.13); }
+.dark .border-lime-400\/30,
+.dark .border-lime-400\/40,
+.dark .border-lime-400\/50 { border-color: rgba(52, 201, 143, 0.3); }
+
+/* ---------- 5. Scroll reveal (see Reveal.tsx) ---------- */
+.ap-reveal {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  filter: blur(8px);
+  transition: opacity 1s var(--ap-ease), transform 1s var(--ap-ease), filter 1s var(--ap-ease);
+  will-change: opacity, transform, filter;
+}
+.ap-reveal.is-in { opacity: 1; transform: none; filter: none; will-change: auto; }
+@media (prefers-reduced-motion: reduce) {
+  .ap-reveal { opacity: 1; transform: none; filter: none; }
+}
+@media print {
+  .ap-reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
+}
+
+/* ---------- 6. Hero ---------- */
+@keyframes ap-rise {
+  from { opacity: 0; transform: translateY(28px); filter: blur(10px); }
+  to   { opacity: 1; transform: none; filter: blur(0); }
+}
+@keyframes ap-gradient {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+/* Hold the hero intro until the splash curtain lifts */
+.rs-splash-active .ap-intro { animation-play-state: paused !important; }
+
+.ap-hero { text-align: center; padding: clamp(1rem, 4vw, 3.5rem) 0 0; }
+
+.ap-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ap-text-2);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--ap-hairline);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  animation: ap-rise 1s var(--ap-ease) both;
+}
+.ap-kicker svg { color: var(--ap-accent); }
+html.light .ap-kicker { background: rgba(23, 21, 26, 0.04); }
+
+.ap-hero-title {
+  margin: 1.25rem auto 0;
+  max-width: 18ch;
+  font-size: clamp(2.5rem, 7.6vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.045em;
+  color: var(--ap-text);
+}
+.ap-line {
+  display: block;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  animation: ap-rise 1.1s var(--ap-ease) both;
+}
+.ap-gradient-text {
+  background-image: var(--ap-grad-hero);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ap-rise 1.1s var(--ap-ease) both, ap-gradient 9s ease-in-out infinite alternate;
+}
+
+.ap-hero-sub {
+  max-width: 40rem;
+  margin: 1.5rem auto 0;
+  font-size: clamp(1.05rem, 1.7vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--ap-text-2);
+  animation: ap-rise 1.1s var(--ap-ease) 0.3s both;
+}
+html.light .ap-hero-sub { color: var(--ap-text-2); }
+
+.ap-legend {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 1.4rem;
+  margin: 2rem 0 0;
+  padding: 0.75rem 1.35rem;
+  list-style: none;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: var(--ap-text-2);
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-hairline);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+  animation: ap-rise 1.1s var(--ap-ease) 0.45s both;
+}
+.ap-legend li { display: inline-flex; align-items: center; gap: 0.5rem; }
+.ap-legend strong { color: var(--ap-text); font-weight: 600; }
+.ap-dot { width: 8px; height: 8px; border-radius: 999px; flex: none; }
+html.light .ap-legend { box-shadow: 0 1px 2px rgba(23, 21, 26, 0.04), 0 12px 32px -14px rgba(23, 21, 26, 0.16); }
+
+.ap-presets { margin-top: 2.25rem; animation: ap-rise 1.1s var(--ap-ease) 0.55s both; }
+.ap-presets-label { margin: 0 0 0.85rem; font-size: 0.8rem; font-weight: 500; color: var(--ap-text-2); }
+html.light .ap-presets-label { color: var(--ap-text-2); }
+.ap-chip-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; }
+.ap-chip {
+  min-height: 44px;
+  padding: 0.5rem 1.15rem;
+  border-radius: 999px;
+  border: 1px solid var(--ap-hairline);
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--ap-text-2);
+  background: rgba(255, 255, 255, 0.04);
+  transition: background-color 0.3s var(--ap-ease), color 0.3s, transform 0.3s var(--ap-ease), box-shadow 0.3s, border-color 0.3s;
+}
+.ap-chip:hover { background: rgba(255, 255, 255, 0.09); color: var(--ap-text); }
+.ap-chip:active { transform: scale(0.96); }
+.ap-chip[aria-pressed="true"] {
+  background: var(--ap-on-bg);
+  border-color: transparent;
+  color: var(--ap-on-text);
+  font-weight: 600;
+  box-shadow: 0 10px 26px -12px var(--ap-on-bg);
+}
+html.light .ap-chip { background: rgba(23, 21, 26, 0.04); color: var(--ap-text); }
+html.light .ap-chip:hover { background: rgba(23, 21, 26, 0.08); }
+
+/* How it works */
+.ap-card {
+  background: var(--ap-surface);
+  border: 1px solid var(--ap-hairline);
+  border-radius: 24px;
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  backdrop-filter: saturate(180%) blur(24px);
+}
+html.light .ap-card { box-shadow: 0 1px 2px rgba(23, 21, 26, 0.04), 0 18px 44px -18px rgba(23, 21, 26, 0.16); }
+.ap-how { max-width: 64rem; margin: 2.25rem auto 0; padding: 1.5rem; text-align: left; animation: ap-rise 0.7s var(--ap-ease) both; }
+.ap-how-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem; }
+.ap-how-title { display: flex; align-items: center; gap: 0.5rem; font-size: 1.05rem; font-weight: 600; color: var(--ap-text); }
+.ap-how-close {
+  min-height: 44px; min-width: 44px; padding: 0 0.9rem; border-radius: 999px;
+  font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--ap-accent); background: transparent;
+}
+.ap-how-close:hover { background: rgba(216, 180, 106, 0.12); }
+.ap-how-grid { display: grid; grid-template-columns: 1fr; gap: 0.9rem; }
+@media (min-width: 768px) { .ap-how-grid { grid-template-columns: repeat(3, 1fr); } }
+.ap-step { padding: 1.15rem 1.25rem; border-radius: 18px; background: rgba(255, 255, 255, 0.035); border: 1px solid var(--ap-hairline); }
+html.light .ap-step { background: #f6f3ee; border-color: transparent; }
+.ap-step-num { display: block; margin-bottom: 0.4rem; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em; }
+.ap-step p { margin: 0; font-size: 0.85rem; line-height: 1.55; color: var(--ap-text-2); }
+
+/* ---------- 7. Score ring ---------- */
+.ap-ring-progress { filter: drop-shadow(0 0 7px color-mix(in srgb, currentColor 50%, transparent)); }
+html.light .ap-ring-progress { filter: none; }
+html.light circle.score-track { stroke: rgba(23, 21, 26, 0.08) !important; }
