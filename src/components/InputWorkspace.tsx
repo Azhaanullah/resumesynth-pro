@@ -136,7 +136,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
           )}
 
           {fileError && (
-            <div role="alert" className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
+            <div role="alert" className="p-3 rounded-xl flex items-center gap-2" style={{ backgroundColor: 'rgba(244,63,94,0.1)', borderColor: 'rgba(244,63,94,0.3)', border: '1px solid', color: '#f43f5e' }}>
               <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span>{fileError}</span>
             </div>

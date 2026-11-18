@@ -9,25 +9,21 @@ export default {
     extend: {
       colors: {
         ink: {
-          950: '#0A0E17',
-          900: '#141B2D',
-          850: '#1C2541',
-          800: '#1e293b',
-          700: '#2a3554',
+          950: '#17110E',
+          900: '#201913',
+          850: '#291F19',
+          800: '#211913',
+          700: '#2D221C',
         },
         accent: {
-          DEFAULT: '#C9553B',
-          hover: '#D9604A',
-          light: '#FDEEEB',
+          DEFAULT: '#2860F5',
+          hover: '#1F50D4',
+          light: 'rgba(40, 96, 245, 0.14)',
         },
-        warm: {
-          paper: '#FAF8F5',
-          linen: '#EFEC E6',
-          cream: '#FFFFFF',
-        },
-        slate: {
-          850: '#1a1a2e',
-          750: '#2d2d44',
+        cream: {
+          DEFAULT: '#EAE0CC',
+          muted: 'rgba(234, 224, 204, 0.72)',
+          subtle: 'rgba(234, 224, 204, 0.48)',
         }
       },
       fontFamily: {
@@ -37,7 +33,6 @@ export default {
       },
       animation: {
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'glow-spin': 'spin 12s linear infinite',
       }
     },
   },

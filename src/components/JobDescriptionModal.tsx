@@ -201,7 +201,7 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
               onClick={handleCopyText}
               className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-blue-500" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
               <span>{copied ? 'Copied' : 'Copy'}</span>
             </button>
 

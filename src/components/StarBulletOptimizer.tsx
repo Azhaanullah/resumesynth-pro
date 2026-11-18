@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
 import { Wand2, Copy, Check, PlusCircle } from 'lucide-react';
 
+const isDark = (): boolean => document.documentElement.classList.contains('dark');
+
 interface StarBulletOptimizerProps {
   analysis: AnalysisResult;
   onApplyBullet: (newBullet: string) => void;
@@ -11,6 +13,7 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
   const [copied, setCopied] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState('35% throughput boost');
   const [customAction, setCustomAction] = useState('Architected');
+  const dark = isDark();
 
   const actionVerbOptions = ['Architected', 'Spearheaded', 'Engineered', 'Optimized', 'Streamlined', 'Overhauled'];
   const metricOptions = [
@@ -37,30 +40,31 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
     <article
       id="bullet-studio"
       aria-labelledby="star-studio-heading"
-      className="rounded-2xl border border-white/[0.12] bg-slate-900/75 p-5 backdrop-blur-xl shadow-xl flex flex-col justify-between"
+      className="rounded-2xl border p-5 shadow-xl flex flex-col justify-between"
+      style={{ borderColor: 'var(--border)', backgroundColor: dark ? 'rgba(32,25,19,0.86)' : 'rgba(255,253,245,0.95)', boxShadow: dark ? '0 18px 44px rgba(23,17,14,0.14)' : '0 14px 36px rgba(53,32,20,0.08)' }}
     >
       <div>
-        <div className="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3 border-b border-white/[0.1]">
+        <div className="flex flex-wrap items-start justify-between gap-3 mb-4 pb-3" style={{ borderBottomColor: 'var(--border)', borderBottomWidth: 1, borderBottomStyle: 'solid' }}>
           <div>
             <div className="flex items-center gap-2">
-              <Wand2 className="w-4 h-4 text-violet-300" aria-hidden="true" />
-              <h3 id="star-studio-heading" className="font-display text-base font-bold text-white tracking-tight">
+              <Wand2 className="w-4 h-4" style={{ color: 'var(--accent)' }} aria-hidden="true" />
+              <h3 id="star-studio-heading" className="font-display text-base font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>
                 STAR Bullet Rewriter & Impact Injector
               </h3>
             </div>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
               Transform passive duty descriptions into measurable, result-backed STAR achievements.
             </p>
           </div>
-          <span className="px-2.5 py-1 rounded-full bg-violet-400/15 border border-violet-400/30 font-mono text-xs text-violet-200 font-bold uppercase tracking-wider">
+          <span className="px-2.5 py-1 rounded-full font-mono text-xs font-bold uppercase tracking-wider" style={{ backgroundColor: 'var(--accent-light)', border: '1px solid var(--accent-border)', color: 'var(--accent)' }}>
             {analysis.improvement}
           </span>
         </div>
 
         {/* Interactive Controls */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3.5 rounded-xl bg-black/50 border border-white/[0.08]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3.5 rounded-xl border" style={{ borderColor: 'var(--border)', backgroundColor: dark ? 'rgba(0,0,0,0.2)' : 'rgba(53,32,20,0.03)' }}>
           <div>
-            <label id="verb-group-label" className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2 font-semibold">
+            <label id="verb-group-label" className="block text-xs font-mono uppercase tracking-wider mb-2 font-semibold" style={{ color: 'var(--text-muted)' }}>
               Select Strong Action Verb
             </label>
             <div className="flex flex-wrap gap-1.5" role="group" aria-labelledby="verb-group-label">
@@ -69,11 +73,13 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
                   key={verb}
                   type="button"
                   onClick={() => setCustomAction(verb)}
-                  className={`min-h-[36px] px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                    customAction === verb
-                      ? 'bg-violet-500 text-white shadow-md'
-                      : 'bg-white/[0.08] text-slate-200 hover:bg-white/[0.15]'
+                  className={`min-h-[36px] px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer border ${
+                    customAction === verb ? 'shadow-md' : ''
                   }`}
+                  style={customAction === verb
+                    ? { backgroundColor: 'var(--accent)', color: '#FFFFFF', borderColor: 'var(--accent)' }
+                    : { backgroundColor: dark ? 'rgba(255,255,255,0.06)' : 'rgba(53,32,20,0.04)', borderColor: 'var(--border)', color: 'var(--text-main)' }
+                  }
                   aria-pressed={customAction === verb}
                 >
                   {verb}
@@ -83,17 +89,18 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
           </div>
 
           <div>
-            <label htmlFor="metric-select" className="block text-xs font-mono uppercase tracking-wider text-slate-300 mb-2 font-semibold">
+            <label htmlFor="metric-select" className="block text-xs font-mono uppercase tracking-wider mb-2 font-semibold" style={{ color: 'var(--text-muted)' }}>
               Inject Quantifiable Metric
             </label>
             <select
               id="metric-select"
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value)}
-              className="w-full min-h-[40px] px-3 py-1.5 rounded-xl bg-slate-900 border border-white/20 text-xs text-slate-100 font-medium focus:outline-none focus:border-violet-400 cursor-pointer"
+              className="w-full min-h-[40px] px-3 py-1.5 rounded-xl text-xs font-medium focus:outline-none focus:border-[var(--accent)] cursor-pointer border"
+              style={{ backgroundColor: dark ? 'rgba(0,0,0,0.2)' : 'rgba(53,32,20,0.03)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
             >
               {metricOptions.map(m => (
-                <option key={m} value={m} className="bg-slate-900">{m}</option>
+                <option key={m} value={m}>{m}</option>
               ))}
             </select>
           </div>
@@ -101,54 +108,56 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
 
         {/* Comparison Cards */}
         <div className="space-y-3">
-          <div className="rounded-xl border border-rose-400/30 bg-rose-500/[0.05] p-3.5">
-            <div className="flex items-center gap-2 mb-1 text-xs font-mono font-bold text-rose-300 uppercase tracking-wider">
+          <div className="rounded-xl border p-3.5" style={{ borderColor: 'rgba(244,63,94,0.25)', backgroundColor: 'rgba(244,63,94,0.05)' }}>
+            <div className="flex items-center gap-2 mb-1 text-xs font-mono font-bold uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-rose-400" aria-hidden="true" />
-              Original Passive Bullet:
+              <span style={{ color: '#f43f5e' }}>Original Passive Bullet:</span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed italic">
+            <p className="text-xs leading-relaxed italic" style={{ color: 'var(--text-muted)' }}>
               "Helped build a microservice project in Go and made it run faster using Docker."
             </p>
           </div>
 
-          <div className="rounded-xl border border-lime-400/35 bg-lime-400/[0.06] p-4 shadow-lg">
+          <div className="rounded-xl border p-4 shadow-lg" style={{ borderColor: dark ? 'rgba(163,230,53,0.3)' : 'rgba(53,32,20,0.2)', backgroundColor: dark ? 'rgba(163,230,53,0.06)' : 'rgba(53,32,20,0.03)' }}>
             <div className="flex items-center justify-between mb-1.5">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold text-lime-300 uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-lime-400 animate-pulse" aria-hidden="true" />
-                Suggested STAR Bullet (Fact-Anchored):
+              <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider">
+                <span className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: 'var(--accent)' }} aria-hidden="true" />
+                <span style={{ color: 'var(--accent)' }}>Suggested STAR Bullet (Fact-Anchored):</span>
               </div>
-              <span className="text-xs text-lime-200 font-mono font-bold">
+              <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent)' }}>
                 High ATS Density
               </span>
             </div>
-            <p id="star-bullet-content" className="text-xs text-slate-100 font-semibold leading-relaxed">
+            <p id="star-bullet-content" className="text-xs font-semibold leading-relaxed" style={{ color: 'var(--text-main)' }}>
               {dynamicRewrite}
             </p>
 
-            <div className="mt-3 pt-3 border-t border-white/[0.08] flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-xs text-slate-300">
-                <span className="text-lime-300 font-bold">✓ Strong verb</span>
+            <div className="mt-3 pt-3 flex flex-wrap items-center justify-between gap-2" style={{ borderTopColor: 'var(--border)', borderTopWidth: 1, borderTopStyle: 'solid' }}>
+              <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>✓ Strong verb</span>
                 <span>•</span>
-                <span className="text-cyan-300 font-bold">✓ JD keywords included</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>✓ JD keywords included</span>
                 <span>•</span>
-                <span className="text-amber-300 font-bold">⚠ Verify numbers</span>
+                <span className="font-bold" style={{ color: dark ? '#fbbf24' : '#b45309' }}>⚠ Verify numbers</span>
               </div>
 
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={handleCopy}
-                  className="min-h-[40px] px-3.5 py-1.5 rounded-xl bg-white/[0.1] hover:bg-white/[0.2] border border-white/15 text-xs font-bold text-slate-100 transition flex items-center gap-1.5 cursor-pointer"
+                  className="min-h-[40px] px-3.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer border"
+                  style={{ backgroundColor: dark ? 'rgba(255,255,255,0.06)' : 'rgba(53,32,20,0.04)', borderColor: 'var(--border)', color: 'var(--text-main)' }}
                   aria-label="Copy enhanced STAR bullet"
                 >
-                  {copied ? <Check className="w-4 h-4 text-lime-400" aria-hidden="true" /> : <Copy className="w-4 h-4 text-slate-300" aria-hidden="true" />}
+                  {copied ? <Check className="w-4 h-4" style={{ color: 'var(--accent)' }} aria-hidden="true" /> : <Copy className="w-4 h-4" style={{ color: 'var(--text-muted)' }} aria-hidden="true" />}
                   <span>{copied ? "Copied" : "Copy"}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => onApplyBullet(dynamicRewrite)}
-                  className="min-h-[40px] px-4 py-1.5 rounded-xl bg-lime-400 text-slate-950 font-bold text-xs hover:bg-lime-300 transition shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+                  className="min-h-[40px] px-4 py-1.5 rounded-xl text-xs font-bold transition shadow-md active:scale-95 cursor-pointer flex items-center gap-1.5"
+                  style={{ backgroundColor: 'var(--accent)', color: '#FFFFFF' }}
                   aria-label="Apply STAR bullet directly to resume editor"
                 >
                   <PlusCircle className="w-4 h-4" aria-hidden="true" />
