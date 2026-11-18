@@ -1,0 +1,30 @@
+John Doe
+Software Engineer
+
+SUMMARY
+Backend Engineer with 3+ years of experience building fault-tolerant microservices, optimizing database performance, and designing scalable distributed systems. Proven track record of reducing latency by 40% and improving system reliability.
+
+EXPERIENCE
+Senior Software Engineer at TechCorp Inc.
+Jan 2022 - Present
+- Architected and built a distributed event-driven platform processing 10M+ events/day
+- Optimized PostgreSQL queries reducing p99 latency from 500ms to 80ms
+- Led migration from monolith to microservices using Kubernetes and gRPC
+- Mentored 4 junior engineers on system design and code review practices
+
+Software Engineer at StartupXYZ
+Jun 2019 - Dec 2021
+- Developed RESTful APIs serving 500K+ daily active users
+- Implemented CI/CD pipelines reducing deployment time from 2 hours to 15 minutes
+- Built real-time analytics dashboard using WebSocket and Redis
+
+EDUCATION
+Bachelor of Science in Computer Science
+University of Technology
+2015 - 2019
+
+SKILLS
+Languages: Go, Python, TypeScript, SQL
+Frameworks: gRPC, GraphQL, React, Node.js
+Infrastructure: Kubernetes, Docker, AWS, PostgreSQL, Redis, Kafka
+Tools: Git, Prometheus, Grafana, Terraform

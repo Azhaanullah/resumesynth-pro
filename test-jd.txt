@@ -1,0 +1,19 @@
+Stripe · Junior / Mid Backend Systems Engineer
+
+About the Role:
+We are looking for a Systems Engineer to design, build, and maintain high-reliability backend services handling millions of financial events per day. You'll work on our core infrastructure team building scalable distributed systems.
+
+Requirements:
+- 2+ years of experience with Go or Python in production
+- Strong understanding of distributed systems concepts (CAP theorem, consensus, replication)
+- Experience with Kubernetes, Docker, and cloud infrastructure (AWS/GCP)
+- Proficiency with SQL databases (PostgreSQL preferred) and query optimization
+- Familiarity with message queues (Kafka, RabbitMQ) and event-driven architectures
+- Experience with observability tools (Prometheus, Grafana, OpenTelemetry)
+- BS/MS in Computer Science or equivalent practical experience
+
+Nice to Have:
+- Experience with financial systems or payments
+- gRPC / Protocol Buffers
+- Terraform / Infrastructure as Code
+- Mentoring junior engineers

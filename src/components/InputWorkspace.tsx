@@ -58,17 +58,17 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
       <h2 id="inputs-heading" className="sr-only">Input Workspace</h2>
 
       {/* Single Card Container */}
-      <div className="rounded-2xl border border-white/[0.12] bg-slate-900/75 backdrop-blur-xl shadow-xl overflow-hidden">
+      <div className="rounded-2xl border border-[var(--border)] bg-[var(--bg-secondary)] shadow-sm overflow-hidden">
 
         {/* Header */}
-        <div className="p-5 border-b border-white/[0.1] flex items-center justify-between gap-4">
+        <div className="p-5 border-b border-[var(--border)] flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="w-7 h-7 rounded-lg bg-lime-400/20 text-lime-300 font-mono text-xs font-bold flex items-center justify-center border border-lime-400/40" aria-hidden="true">
+            <span className="w-7 h-7 rounded-lg bg-[var(--accent)]/10 text-[var(--accent)] font-mono text-xs font-bold flex items-center justify-center border border-[var(--accent)]/20" aria-hidden="true">
               01
             </span>
             <div>
-              <h3 className="font-display text-base font-bold text-white tracking-tight">Workspace</h3>
-              <p className="text-xs text-slate-400 mt-0.5">Paste your resume and job description below</p>
+              <h3 className="font-display text-base font-bold text-[var(--text-main)] tracking-tight">Workspace</h3>
+              <p className="text-xs text-[var(--text-muted)] mt-0.5">Paste your resume and job description below</p>
             </div>
           </div>
 
@@ -76,14 +76,14 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
             <button
               type="button"
               onClick={() => document.getElementById('file-upload-input')?.click()}
-              className="min-h-[40px] px-4 py-2 rounded-xl bg-lime-500/15 hover:bg-lime-500/25 border border-lime-400/30 text-lime-300 text-sm font-semibold transition flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="min-h-[40px] px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-semibold hover:bg-[var(--accent-hover)] transition flex items-center gap-1.5 cursor-pointer active:scale-95 shadow-sm"
             >
               <Upload className="w-4 h-4" aria-hidden="true" />
               Upload PDF
             </button>
             <button
               type="button"
-              className="min-h-[40px] px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 text-sm font-semibold transition flex items-center gap-1.5 cursor-pointer"
+              className="min-h-[40px] px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--bg-elevated)] text-[var(--text-muted)] text-sm font-semibold hover:border-[var(--accent)] hover:text-[var(--text-main)] transition flex items-center gap-1.5 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" aria-hidden="true" />
               Studio
@@ -108,8 +108,8 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                 onClick={() => document.getElementById('file-upload-input')?.click()}
                 className={`border-2 border-dashed rounded-xl p-5 text-center transition cursor-pointer ${
                   isDragging
-                    ? 'border-lime-400 bg-lime-400/[0.08]'
-                    : 'border-white/15 hover:border-white/25 bg-black/30'
+                    ? 'border-[var(--accent)] bg-[var(--accent)]/5'
+                    : 'border-[var(--border)] hover:border-[var(--accent)]/50 bg-[var(--bg-elevated)]'
                 }`}
               >
                 <input
@@ -120,14 +120,14 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                   className="sr-only"
                   aria-label="Upload resume file"
                 />
-                <Upload className="w-6 h-6 text-slate-400 mx-auto mb-2" aria-hidden="true" />
-                <p className="text-sm text-slate-300">
+                <Upload className="w-6 h-6 text-[var(--text-muted)] mx-auto mb-2" aria-hidden="true" />
+                <p className="text-sm text-[var(--text-muted)]">
                   Drop a PDF or DOCX here to extract your resume directly into this panel
                 </p>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); document.getElementById('file-upload-input')?.click(); }}
-                  className="mt-2 text-xs text-slate-500 hover:text-slate-300 transition cursor-pointer"
+                  className="mt-2 text-xs text-[var(--text-subtle)] hover:text-[var(--accent)] transition cursor-pointer"
                 >
                   Browse
                 </button>
@@ -136,126 +136,123 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
           )}
 
           {fileError && (
-            <div role="alert" className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-200 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" aria-hidden="true" />
+            <div role="alert" className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
               <span>{fileError}</span>
             </div>
           )}
 
-          {/* Staged File */}
+          {/* Unified Textarea */}
+          <textarea
+            id="unified-textarea"
+            value={textContent}
+            onChange={(e) => onTextChange(e.target.value)}
+            placeholder="Paste your resume text, project details, or paste the job description here..."
+            className="w-full min-h-[280px] p-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)] text-sm text-[var(--text-main)] leading-relaxed focus:outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)] resize-y"
+          />
+
+          {/* Staged File Display */}
           {stagedFile && (
-            <div className="p-4 rounded-xl bg-black/40 border border-white/[0.08]">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-lg bg-cyan-400/15 border border-cyan-400/30 flex items-center justify-center text-cyan-300 shrink-0">
-                  <FileCheck className="w-4 h-4" aria-hidden="true" />
+            <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-[var(--bg-elevated)] border border-[var(--border)]">
+              <div className="flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/20 flex items-center justify-center text-[var(--accent)]" aria-hidden="true">
+                  <FileCheck className="w-5 h-5" />
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">{stagedFile.name}</p>
-                  <p className="text-xs text-slate-400">{(stagedFile.size / (1024 * 1024)).toFixed(2)} MB</p>
+                <div>
+                  <h4 className="text-sm font-bold text-[var(--text-main)]">{stagedFile.name}</h4>
+                  <p className="text-xs text-[var(--text-muted)]">
+                    {(stagedFile.size / (1024 * 1024)).toFixed(2)} MB • Ready to parse
+                  </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      if (!stagedFile) return;
-                      setIsParsing(true);
-                      setFileError(null);
-                      try {
-                        const parsed = await parseResume(stagedFile);
-                        setParsedDoc(parsed);
-                        onTextChange(parsed.text);
-                        onParseComplete?.(parsed);
-                        setShowParserPreview(true);
-                      } catch (err) {
-                        setFileError(err instanceof Error ? err.message : 'Failed to parse file');
-                      } finally {
-                        setIsParsing(false);
-                      }
-                    }}
-                    disabled={isParsing}
-                    className="min-h-[36px] px-3 py-1.5 rounded-lg bg-lime-400/20 hover:bg-lime-400/30 border border-lime-400/30 text-lime-300 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50"
-                  >
-                    {isParsing ? (
-                      <>
-                        <div className="w-3.5 h-3.5 border-2 border-lime-300 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
-                        <span>Parsing...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-                        <span>Parse & Extract</span>
-                      </>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setStagedFile(null)}
-                    className="min-h-[36px] min-w-[36px] p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer flex items-center justify-center"
-                    aria-label="Remove uploaded file"
-                  >
-                    <X className="w-4 h-4" aria-hidden="true" />
-                  </button>
-                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (!stagedFile) return;
+                    setIsParsing(true);
+                    setFileError(null);
+                    try {
+                      const parsed = await parseResume(stagedFile);
+                      setParsedDoc(parsed);
+                      onTextChange(parsed.text);
+                      onParseComplete?.(parsed);
+                      setShowParserPreview(true);
+                    } catch (err) {
+                      setFileError(err instanceof Error ? err.message : 'Failed to parse file');
+                    } finally {
+                      setIsParsing(false);
+                    }
+                  }}
+                  disabled={isParsing}
+                  className="min-h-[44px] px-4 py-2 rounded-lg bg-[var(--accent)] text-white text-xs font-semibold hover:bg-[var(--accent-hover)] transition flex items-center gap-1.5 cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                >
+                  {isParsing ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+                      <span>Parsing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
+                      <span>Parse & Preview</span>
+                    </>
+                  )}
+                </button>
+                <label
+                  htmlFor="file-upload-input"
+                  className="min-h-[44px] px-4 py-2 rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] text-xs font-semibold text-[var(--text-muted)] hover:border-[var(--accent)] hover:text-[var(--text-main)] cursor-pointer transition flex items-center"
+                >
+                  Change File
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setStagedFile(null)}
+                  className="min-h-[44px] min-w-[44px] p-2 rounded-lg text-[var(--text-muted)] hover:text-rose-400 hover:bg-rose-500/10 transition cursor-pointer flex items-center justify-center"
+                  aria-label="Remove uploaded file"
+                >
+                  <X className="w-5 h-5" aria-hidden="true" />
+                </button>
               </div>
             </div>
           )}
 
-          {/* Single Textarea */}
-          <div>
-            <div className="flex items-center justify-between mb-2">
-              <label htmlFor="workspace-textarea" className="text-xs font-semibold text-lime-400 uppercase tracking-wider">
-                Resume & Job Description
-              </label>
-              <span className="font-mono text-xs text-slate-500">{bullets} bullets · {words} words</span>
-            </div>
-            <textarea
-              id="workspace-textarea"
-              value={textContent}
-              onChange={(e) => onTextChange(e.target.value)}
-              placeholder="Paste your resume and the target job description here..."
-              className="w-full min-h-[300px] p-4 rounded-xl bg-black/60 border border-white/10 text-sm text-slate-100 font-mono leading-relaxed focus:outline-none focus:border-lime-400/50 focus:ring-1 focus:ring-lime-400/30 resize-y"
-            />
-            <div className="flex items-center justify-between mt-2 text-xs text-slate-500">
-              <span>Markdown & plain text supported</span>
-              {textContent.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => onTextChange('')}
-                  className="text-slate-400 hover:text-white transition cursor-pointer"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
+          {/* Footer Stats */}
+          <div className="flex items-center justify-between text-xs text-[var(--text-subtle)] pt-2 border-t border-[var(--border)]">
+            <span>
+              {words > 0 ? `${words} words · ${bullets} bullets` : 'Paste requirements or bullet points for highest scoring accuracy.'}
+            </span>
+            <span className="text-[var(--accent)] font-semibold">✓ Markdown & plain text supported</span>
           </div>
-
         </div>
+      </div>
 
-        {/* Footer Action */}
-        <div className="px-5 pb-5">
-          <button
-            type="button"
-            onClick={onRunAnalysis}
-            disabled={isAnalyzing || !textContent.trim()}
-            className={`w-full min-h-[48px] py-3 rounded-xl font-display text-sm font-bold tracking-wide transition shadow-xl flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer ${
-              !textContent.trim()
-                ? 'bg-slate-800 text-slate-500 cursor-not-allowed border border-white/5'
-                : 'bg-lime-400 text-slate-950 hover:bg-lime-300 shadow-[0_0_30px_rgba(163,230,53,0.25)]'
-            }`}
-          >
-            {isAnalyzing ? (
-              <>
-                <div className="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" aria-hidden="true" />
-                <span>Evaluating keyword density, action verbs & metrics...</span>
-              </>
-            ) : (
-              <>
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-                <span>Analyze Match</span>
-              </>
-            )}
-          </button>
-        </div>
+      {/* Primary Action Button */}
+      <div className="pt-2">
+        <button
+          type="button"
+          onClick={onRunAnalysis}
+          disabled={isAnalyzing || !textContent.trim()}
+          className={`w-full min-h-[52px] py-3.5 px-6 rounded-2xl font-display text-sm font-bold tracking-wide transition shadow-lg flex items-center justify-center gap-3 active:scale-[0.99] cursor-pointer ${
+            !textContent.trim()
+              ? 'bg-[var(--bg-secondary)] text-[var(--text-subtle)] cursor-not-allowed border border-[var(--border)]'
+              : 'bg-[var(--accent)] text-white hover:bg-[var(--accent-hover)] shadow-md'
+          }`}
+          aria-label="Run match analysis"
+        >
+          {isAnalyzing ? (
+            <>
+              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
+              <span>Evaluating Keyword Density, Action Verbs & Metrics...</span>
+            </>
+          ) : (
+            <>
+              <span>Run match analysis</span>
+              <ArrowRight className="w-5 h-5" aria-hidden="true" />
+            </>
+          )}
+        </button>
       </div>
 
       {/* Parser Preview Modal */}
@@ -263,8 +260,7 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
         <ParserPreview
           parsed={parsedDoc}
           onClose={() => setShowParserPreview(false)}
-          onUseForJd={(text) => onTextChange(textContent + '\n\n--- JOB DESCRIPTION ---\n\n' + text)}
-          onUseForResume={(text) => onTextChange(text)}
+          onUseForJd={(text) => onTextChange(text)} onUseForResume={(text) => onTextChange(text)}
         />
       )}
     </section>

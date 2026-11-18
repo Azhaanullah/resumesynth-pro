@@ -3,14 +3,14 @@ import { AnalysisResult, PreviewTemplate } from '../types';
 import { FileEdit, Eye, Printer, Copy, Check, Sparkles, Layout } from 'lucide-react';
 
 interface ResumeEditorLivePreviewProps {
-  resumeText: string;
+  textContent: string;
   onResumeChange: (val: string) => void;
   analysis: AnalysisResult;
   targetRole: string;
 }
 
 export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = ({
-  resumeText,
+  textContent,
   onResumeChange,
   analysis
 }) => {
@@ -20,7 +20,7 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(resumeText);
+      await navigator.clipboard.writeText(textContent);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
@@ -55,7 +55,7 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
     return sections;
   };
 
-  const sections = parseResumeSections(resumeText);
+  const sections = parseResumeSections(textContent);
 
   const renderHighlightedContent = (line: string) => {
     if (!highlightKeywords || analysis.matched.length === 0) {
@@ -178,7 +178,7 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
 
           <textarea
             id="markdown-editor-pane"
-            value={resumeText}
+            value={textContent}
             onChange={(e) => onResumeChange(e.target.value)}
             className="w-full flex-1 min-h-[480px] p-4 rounded-xl bg-black/60 border border-white/15 text-slate-100 font-mono text-sm sm:text-xs leading-relaxed resize-y focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
             placeholder="Type or edit your markdown resume here..."

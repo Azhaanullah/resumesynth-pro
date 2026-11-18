@@ -1,5 +1,108 @@
 import { AnalysisResult, KeywordSignal, MissingKeyword, QualityIssue, InterviewQuestion, TailorMode } from '../types';
 
+// Synonym mappings — expand these as needed for each category
+const SYNONYM_MAP: Record<string, string[]> = {
+  // Languages
+  "go": ["golang"],
+  "golang": ["go"],
+  "c++": ["cpp", "c plus plus"],
+  "cpp": ["c++", "c plus plus"],
+  "c#": ["csharp", "c sharp"],
+  "csharp": ["c#", "c sharp"],
+  "javascript": ["js"],
+  "typescript": ["ts"],
+  "python": [],
+  "java": [],
+  "rust": [],
+  "ruby": [],
+  "php": [],
+  "swift": [],
+  "kotlin": [],
+  "scala": [],
+  "sql": [],
+  // Frameworks & Libraries
+  "react": ["jsx", "tsx", "next.js", "nextjs"],
+  "next.js": ["nextjs"],
+  "vue": ["vue.js", "vuetify"],
+  "angular": ["angularjs", "ng"],
+  "node.js": ["nodejs", "node"],
+  "express": ["express.js"],
+  "nestjs": ["nest"],
+  "fastapi": [],
+  "django": [],
+  "flask": [],
+  "spring boot": ["spring"],
+  "pytorch": ["torch"],
+  "tensorflow": ["tf"],
+  "hugging face": ["huggingface", "hf"],
+  "langchain": [],
+  "llamaindex": ["llama index"],
+  "pandas": [],
+  "numpy": ["np"],
+  "scikit-learn": ["sklearn", "scikit"],
+  "tailwind css": ["tailwind"],
+  "graphql": [],
+  "redux": [],
+  "zustand": [],
+  // Databases & Storage
+  "postgresql": ["postgres", "psql"],
+  "mysql": [],
+  "mongodb": ["mongo"],
+  "redis": [],
+  "kafka": [],
+  "elasticsearch": ["es"],
+  "chromadb": [],
+  "pinecone": [],
+  "qdrant": [],
+  "dynamodb": ["dynamo db"],
+  "cassandra": [],
+  "bigquery": ["bq"],
+  "snowflake": [],
+  "supabase": [],
+  "prisma": [],
+  // DevOps & Cloud
+  "docker": [],
+  "kubernetes": ["k8s"],
+  "aws": [],
+  "gcp": ["google cloud", "google cloud platform"],
+  "azure": [],
+  "terraform": [],
+  "ci/cd": ["continuous integration", "continuous deployment"],
+  "github actions": [],
+  "gitlab ci": [],
+  "argocd": [],
+  "helm": [],
+  "prometheus": [],
+  "grafana": [],
+  "datadog": [],
+  "linux": ["unix", "ubuntu", "debian", "centos"],
+  "git": [],
+  "nginx": [],
+  "microservices": ["microservice architecture", "service-oriented architecture", "soa"],
+  "rest apis": ["rest", "restful"],
+  "grpc": [],
+  "websockets": ["websocket"],
+  "serverless": [],
+  // Architecture & Methodologies
+  "distributed systems": ["distributed computing", "distributed architecture"],
+  "system design": [],
+  "acid": ["atomicity consistency isolation durability"],
+  "concurrency": ["parallelism", "multithreading"],
+  "rag": ["retrieval augmented generation"],
+  "llms": ["large language models"],
+  "ab testing": ["a/b testing", "A/B test", "split testing"],
+  "agile": ["scrum", "kanban", "lean"],
+  "tdd": ["test driven development"],
+  "unit testing": ["unit tests", "testing"],
+  "observability": ["monitoring", "telemetry", "logging"],
+  "telemetry": [],
+  "caching": [],
+  "performance tuning": ["optimization", "perf tuning"],
+  "vector search": ["semantic search", "embedding search"],
+  "data warehousing": ["data warehouse"],
+  "window functions": []
+};
+
 export const TECH_KEYWORDS_DICTIONARY = [
   // Languages
   "Go", "Golang", "C++", "C#", "Java", "Python", "TypeScript", "JavaScript", "Rust", "Ruby", "PHP", "Swift", "Kotlin", "Scala", "SQL", "HTML5", "CSS3", "Bash", "Shell",
@@ -33,9 +136,53 @@ export const WEAK_VERBS_MAP: Record<string, string> = {
 export function normalizeText(text: string): string {
   return text
     .toLowerCase()
-    .replace(/[+/#.-]/g, " ")
-    .replace(/\s+/g, " ")
+    .replace(/\s+/g, ' ')
     .trim();
+}
+
+// Normalize only for keyword matching — preserves technical syntax like C++, Next.js
+function normalizeKeyword(kw: string): string {
+  return kw.toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+// Build a full lookup map: canonical normalized → [canonical, ...synonyms]
+const KEYWORD_SYNONYM_MAP: Map<string, string[]> = (() => {
+  const map = new Map<string, string[]>();
+  for (const [term, aliases] of Object.entries(SYNONYM_MAP)) {
+    const all = [term, ...aliases].map(s => normalizeKeyword(s));
+    all.forEach(a => map.set(a, all));
+  }
+  // Also add canonical names from dictionary
+  TECH_KEYWORDS_DICTIONARY.forEach(kw => {
+    const nk = normalizeKeyword(kw);
+    if (!map.has(nk)) map.set(nk, [nk]);
+  });
+  return map;
+})();
+
+function expandKeywordGroup(term: string): string[] {
+  const nk = normalizeKeyword(term);
+  return KEYWORD_SYNONYM_MAP.get(nk) || [nk];
+}
+
+// Word-boundary aware match helper
+function hasBoundaryMatch(text: string, normTerm: string): boolean {
+  // Escape regex special chars except word chars and spaces
+  const escaped = normTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`(?:^|\\s|[-/])(?:${escaped})(?:\\s|$|[.,;!:@#])`, 'i');
+  // Also allow bare standalone term
+  const simplePattern = new RegExp(`\\b${escaped}\\b`, 'i');
+  return simplePattern.test(text) || pattern.test(text);
+}
+
+// Count occurrences with boundary awareness
+function countBoundaryMatches(text: string, normTerm: string): number {
+  const escaped = normTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`\\b${escaped}\\b`, 'gi');
+  let matches: RegExpExecArray | null;
+  let count = 0;
+  while ((matches = pattern.exec(text)) !== null) count++;
+  return count;
 }
 
 export function countWords(text: string): number {
@@ -46,29 +193,79 @@ export function countBullets(text: string): number {
   return text.match(/(^|\n)\s*(?:[*•-]|\d+[.)])\s+/g)?.length ?? (text.trim() ? 1 : 0);
 }
 
-export function extractJobKeywords(jobDescription: string): string[] {
+// Required keywords — "must-have" signals from JD
+const REQUIRED_SIGNALS = [
+  /(?:required|mandatory|must\s+(?:have|possess)|essential|core.*skill|key.*requirement)/i,
+  /(?:need.*[^ ]+.{0,20}(?:experience|proficiency|knowledge))/i,
+];
+
+// Preferred keywords — nice-to-have signals
+const PREFERRED_SIGNALS = [
+  /(?:preferred|nice.?to.?have|bonus|familiarity|exposure|knowledge\.?of)/i,
+  /(?:desirable| advantageous| a\+\+)/i,
+];
+
+export function extractJobKeywords(jobDescription: string): Array<{ term: string; priority: 'required' | 'preferred' }> {
   const normalizedJd = normalizeText(jobDescription);
-  const foundKeywords: string[] = [];
+  const foundKeywords: Array<{ term: string; priority: 'required' | 'preferred' }> = [];
 
-  // Match predefined keywords
+  // Match predefined keywords with priority detection
   TECH_KEYWORDS_DICTIONARY.forEach(kw => {
-    const normKw = normalizeText(kw);
-    const regex = new RegExp(`\\b${normKw}\\b`, 'i');
-    if (regex.test(normalizedJd) || normalizedJd.includes(normKw)) {
-      foundKeywords.push(kw);
+    const normKw = normalizeKeyword(kw);
+    const synonyms = expandKeywordGroup(kw);
+
+    const matches = synonyms.some(s => normalizedJd.includes(s));
+    if (!matches) return;
+
+    // Detect priority based on context
+    let priority: 'required' | 'preferred' = 'preferred';
+
+    // Check surrounding context for required/preferred signals
+    const regex = new RegExp(`(?:${synonyms.map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})`, 'gi');
+    let match;
+    while ((match = regex.exec(normalizedJd)) !== null) {
+      const start = Math.max(0, match.index - 80);
+      const end = Math.min(normalizedJd.length, match.index + kw.length + 80);
+      const context = normalizedJd.slice(start, end);
+
+      if (REQUIRED_SIGNALS.some(sig => sig.test(context))) {
+        priority = 'required';
+        break;
+      }
+      if (PREFERRED_SIGNALS.some(sig => sig.test(context))) {
+        priority = 'preferred';
+      }
     }
+
+    foundKeywords.push({ term: kw, priority });
   });
 
-  // Also extract prominent capitalized terms and bullet items from JD
-  const customMatches = jobDescription.match(/(?:experience with|proficiency in|knowledge of|familiarity with|strong in)\s+([A-Za-z0-9+#.\s]{2,40})/gi) || [];
+  // Extract custom phrases like "experience with X", "proficiency in Y"
+  const customMatches = jobDescription.match(/(?:experience with|proficiency in|knowledge of|familiarity with|strong in|skills in|working with)\s+([A-Za-z0-9+#.\s]{2,40})(?=[.,;)])/gi) || [];
   customMatches.forEach(m => {
-    const clean = m.replace(/^(?:experience with|proficiency in|knowledge of|familiarity with|strong in)\s+/i, '').trim();
-    if (clean.length > 2 && clean.length < 30 && !foundKeywords.includes(clean)) {
-      foundKeywords.push(clean.charAt(0).toUpperCase() + clean.slice(1));
+    const clean = m.replace(/^(?:experience with|proficiency in|knowledge of|familiarity with|strong in|skills in|working with)\s+/i, '').trim();
+    if (clean.length > 2 && clean.length < 30) {
+      const alreadyFound = foundKeywords.some(fk => fk.term === clean);
+      if (!alreadyFound) {
+        // Determine priority from original phrasing
+        const isRequired = /(?:required|mandatory|must|essential|core)/i.test(m);
+        const isPreferred = /(?:preferred|nice.?to.?have|bonus|familiarity|desirable)/i.test(m);
+        foundKeywords.push({
+          term: clean.charAt(0).toUpperCase() + clean.slice(1),
+          priority: isRequired ? 'required' : isPreferred ? 'preferred' : 'preferred'
+        });
+      }
     }
   });
 
-  return Array.from(new Set(foundKeywords));
+  // Sort: required first
+  foundKeywords.sort((a, b) => {
+    if (a.priority === 'required' && b.priority !== 'required') return -1;
+    if (a.priority !== 'required' && b.priority === 'required') return 1;
+    return 0;
+  });
+
+  return foundKeywords;
 }
 
 export function runAtsAnalysis(
@@ -99,32 +296,101 @@ export function runAtsAnalysis(
     };
   }
 
-  // 1. Technical keywords match
+  // 1. Technical keywords match (with synonym expansion and boundary checking)
   const jdKeywords = extractJobKeywords(jobDescription);
   const matchedKeywords: KeywordSignal[] = [];
   const missingKeywords: MissingKeyword[] = [];
+  const keywordOccurrences: Record<string, number> = {}; // For stuffing detection
+
+  // Semantic scoring improvements for required vs. preferred keywords
+  let skillScore = 0;
+
+  // Calculate skill score with improved semantics
+  const semanticSkillScore = () => {
+    const requiredJdCount = jdKeywords.filter(k => k.priority === 'required').length;
+    const requiredMatched = matchedKeywords.filter(m =>
+      jdKeywords.some(k => k.term === m.term && k.priority === 'required')
+    ).length;
+    const preferredJdCount = jdKeywords.filter(k => k.priority === 'preferred').length;
+    const preferredMatched = matchedKeywords.filter(m =>
+      jdKeywords.some(k => k.term === m.term && k.priority === 'preferred')
+    ).length;
+
+    // Base score from matched keywords
+    let score = 0;
+
+    // Required keywords are mandatory: missing one is severe penalty
+    if (requiredJdCount > 0) {
+      score += (requiredMatched / requiredJdCount) * 50;
+    }
+
+    // Preferred keywords add partial credit
+    if (preferredJdCount > 0) {
+      score += (preferredMatched / preferredJdCount) * 30;
+    }
+
+    // Cap at 100
+    return Math.min(100, score);
+  };
+
+  // Calculate semantic skill score with improved prioritization
+  skillScore = Math.round(semanticSkillScore());
 
   jdKeywords.forEach(kw => {
-    const normKw = normalizeText(kw);
-    const count = (normResume.split(normKw).length - 1);
-    if (count > 0 || normResume.includes(normKw)) {
+    const normKw = normalizeKeyword(kw.term);
+    const synonyms = expandKeywordGroup(kw.term);
+
+    // Check all synonyms for matches
+    let foundCount = 0;
+    let anyMatch = false;
+
+    synonyms.forEach(syn => {
+      const count = countBoundaryMatches(normResume, syn);
+      if (count > 0) {
+        foundCount += count;
+        anyMatch = true;
+      }
+    });
+
+    if (anyMatch) {
+      // Apply stuffing penalty: cap useful mentions at 4
+      const cappedCount = Math.min(foundCount, 4);
       matchedKeywords.push({
-        term: kw,
-        count: Math.max(1, count),
+        term: kw.term,
+        count: cappedCount,
         category: 'technical'
       });
+      keywordOccurrences[normKw] = foundCount;
     } else {
-      const isHighPriority = ["distributed systems", "microservices", "sql", "python", "kubernetes", "react", "golang", "go", "pytorch", "aws"].includes(normKw);
+      // Determine priority from JD context
+      const jdKeywordEntry = jdKeywords.find(k => k.term === kw.term);
       missingKeywords.push({
-        term: kw,
-        priority: isHighPriority ? 'high' : 'medium',
+        term: kw.term,
+        priority: jdKeywordEntry?.priority === 'required' ? 'high' : 'medium',
         category: 'technical'
       });
     }
   });
 
   const totalJdTerms = Math.max(1, jdKeywords.length);
-  const skillScore = Math.min(100, Math.round((matchedKeywords.length / totalJdTerms) * 100));
+  const requiredTotal = jdKeywords.filter(k => k.priority === 'required').length;
+  const preferredTotal = jdKeywords.filter(k => k.priority === 'preferred').length;
+
+  // Additional semantic penalty for missing required keywords (beyond stuffing)
+  const requiredMissing = requiredTotal - matchedKeywords.filter(m =>
+    jdKeywords.some(k => k.term === m.term && k.priority === 'required')
+  ).length;
+  const requiredPenalty = requiredMissing * 25; // Stronger penalty per missing required term
+
+  // Keyword stuffing penalty: if any keyword appears 5+ times, reduce score
+  const stuffingCount = Object.values(keywordOccurrences).filter(c => c >= 5).length;
+  let stuffingPenalty = 0;
+  if (stuffingCount > 0) {
+    stuffingPenalty = Math.min(
+      stuffingCount * 8 + Object.values(keywordOccurrences).filter(c => c >= 5).reduce((sum, c) => sum + (c - 4) * 3, 0),
+      30
+    );
+  }
 
   // 2. Action Verbs analysis
   const powerVerbMatches = POWER_ACTION_VERBS.filter(v => {

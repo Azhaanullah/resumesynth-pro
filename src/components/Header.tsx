@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, RefreshCw, Sun, Moon, Download, Menu, ShieldCheck, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import { RefreshCw, Sun, Moon, Download, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 interface HeaderProps {
   onReset: () => void;
@@ -22,128 +22,115 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <>
-      {/* 1. Skip to Content Link (WCAG 2.4.1 Bypass Blocks) */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-lime-400 focus:text-slate-950 focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-[var(--accent)] focus:text-white focus:font-bold focus:rounded-lg focus:shadow-lg focus:outline-none"
       >
         Skip to main content
       </a>
 
       <header
         role="banner"
-        className="sticky top-0 z-40 border-b border-white/[0.12] bg-[#070c18]/90 backdrop-blur-xl transition-colors"
+        className="sticky top-0 z-40 border-b border-[var(--border)] bg-[var(--bg-main)]/95 backdrop-blur-sm transition-colors"
       >
-        <div className={`mx-auto flex items-center justify-between py-3 transition-all duration-300 ease-in-out ${
-          isSidebarOpen ? 'max-w-[1440px] px-4 sm:px-8' : 'max-w-[1880px] px-6 sm:px-12 lg:px-16'
+        <div className={`mx-auto flex items-center justify-between py-4 ${
+          isSidebarOpen ? 'max-w-[1440px] px-6' : 'max-w-[1880px] px-8'
         }`}>
-          {/* Left: Sidebar Toggle Key & Logo */}
-          <div className="flex items-center gap-3">
+          {/* Left: Logo */}
+          <div className="flex items-center gap-4">
             <button
               type="button"
               onClick={onToggleSidebar}
-              className="sidebar-toggle-btn min-h-[44px] min-w-[44px] px-2.5 py-2 rounded-xl bg-white/[0.06] border border-white/10 text-slate-200 hover:text-white hover:bg-white/[0.12] flex items-center justify-center cursor-pointer transition active:scale-95 gap-1.5 group"
-              aria-label={isSidebarOpen ? "Close sidebar menu (Enlarge view) [Shortcut: [ or Ctrl+B]" : "Open sidebar menu (Normal view) [Shortcut: [ or Ctrl+B]"}
-              title={isSidebarOpen ? "Close sidebar (Enlarge view) — Shortcut: [ or Ctrl+B" : "Open sidebar (Normal view) — Shortcut: [ or Ctrl+B"}
+              className="min-h-[38px] min-w-[38px] px-2 rounded-md bg-[var(--bg-secondary)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--accent)] transition cursor-pointer flex items-center justify-center"
+              aria-label={isSidebarOpen ? "Close sidebar menu" : "Open sidebar menu"}
             >
               {isSidebarOpen ? (
-                <PanelLeftClose className="w-5 h-5 transition group-hover:-translate-x-0.5 text-slate-300" aria-hidden="true" />
+                <PanelLeftClose className="w-4 h-4" aria-hidden="true" />
               ) : (
-                <PanelLeftOpen className="w-5 h-5 transition group-hover:translate-x-0.5 text-slate-300" aria-hidden="true" />
+                <PanelLeftOpen className="w-4 h-4" aria-hidden="true" />
               )}
-              <span className="hidden xl:inline text-[10px] font-mono text-slate-400 bg-white/10 px-1.5 py-0.5 rounded font-semibold shortcut-hint">
-                [
-              </span>
             </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <div
-                className="header-brand-logo grid h-10 w-10 place-items-center rounded-xl border border-lime-400/40 bg-lime-400/15 text-lime-300 shadow-[0_0_24px_rgba(163,230,53,0.2)] transition-colors"
+                className="h-8 w-8 grid place-items-center rounded-md bg-[var(--accent)] text-white font-bold text-sm"
                 aria-hidden="true"
               >
-                <Sparkles className="w-5 h-5" />
+                RS
               </div>
-              <div className="flex items-center gap-2">
-                <span className="font-display text-xl font-bold tracking-tight text-white header-brand-name transition-colors">
-                  Resume<span className="text-lime-300 header-brand-accent transition-colors">Synth</span>
-                </span>
-                <span className="header-brand-badge hidden sm:inline-flex rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-widest text-cyan-300 font-bold transition-colors">
-                  PRO
-                </span>
-              </div>
+              <span className="font-display text-lg font-bold text-[var(--text-main)] tracking-tight">
+                Resume<span className="text-[var(--accent)]">Synth</span>
+              </span>
+              <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[10px] uppercase tracking-wider font-semibold bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20">
+                PRO
+              </span>
             </div>
           </div>
 
-          {/* Center: Semantic Navigation */}
+          {/* Center: Navigation */}
           <nav
             aria-label="Primary Navigation"
-            className="hidden md:flex items-center gap-6 text-sm text-slate-300"
+            className="hidden md:flex items-center gap-8 text-sm"
           >
             <a
               href="#dashboard"
-              className="hover:text-white transition py-2 font-medium"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
             >
               Workspace
             </a>
             <button
               type="button"
               onClick={onToggleHowItWorks}
-              className="hover:text-lime-300 transition py-2 font-medium cursor-pointer text-slate-300 flex items-center gap-1.5"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)] cursor-pointer"
             >
-              <span>How It Works</span>
+              How It Works
             </button>
             <a
               href="#ats-analysis"
-              className="hover:text-cyan-300 transition py-2 font-medium"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
             >
               Match breakdown
             </a>
             <a
               href="#interview-radar"
-              className="hover:text-violet-300 transition py-2 font-medium"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
             >
               Interview Radar
             </a>
           </nav>
 
-          {/* Right: Actions with 44px min tap targets */}
-          <div className="flex items-center gap-2 sm:gap-3">
-            {/* Theme Toggle (Light / Dark Mode) */}
+          {/* Right: Actions */}
+          <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onToggleTheme}
-              className="theme-toggle-btn group min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-xl border border-white/15 bg-white/[0.06] text-xs font-semibold text-slate-200 hover:border-white/30 hover:bg-white/[0.12] hover:text-white transition active:scale-95 cursor-pointer flex items-center gap-2"
+              className="min-h-[38px] min-w-[38px] px-3 py-2 rounded-md border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--accent)] transition active:scale-95 cursor-pointer flex items-center gap-2 text-xs font-medium"
               title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
               aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             >
               {isDark ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-300 transition-transform group-hover:rotate-45" aria-hidden="true" />
-                  <span className="hidden sm:inline">Light</span>
-                </>
+                <Sun className="w-4 h-4" aria-hidden="true" />
               ) : (
-                <>
-                  <Moon className="w-4 h-4 text-indigo-500 transition-transform group-hover:-rotate-12" aria-hidden="true" />
-                  <span className="hidden sm:inline">Dark</span>
-                </>
+                <Moon className="w-4 h-4" aria-hidden="true" />
               )}
+              <span className="hidden sm:inline">{isDark ? 'Light' : 'Dark'}</span>
             </button>
 
             <button
               type="button"
               onClick={onReset}
-              className="group min-h-[44px] min-w-[44px] px-3.5 py-2 rounded-xl border border-white/15 bg-white/[0.06] text-xs font-semibold text-slate-200 hover:border-white/30 hover:bg-white/[0.12] hover:text-white transition active:scale-95 cursor-pointer flex items-center gap-2"
-              title="Reset resume and job description to default"
+              className="min-h-[38px] min-w-[38px] px-3 py-2 rounded-md border border-[var(--border)] bg-[var(--bg-secondary)] text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--accent)] transition active:scale-95 cursor-pointer flex items-center gap-2 text-xs font-medium"
+              title="Reset workspace to default"
               aria-label="Reset workspace to default"
             >
-              <RefreshCw className="w-4 h-4 transition group-hover:rotate-180 duration-500 text-slate-300" aria-hidden="true" />
+              <RefreshCw className="w-4 h-4" aria-hidden="true" />
               <span className="hidden sm:inline">Reset</span>
             </button>
 
             <button
               type="button"
               onClick={onOpenExport}
-              className="header-export-btn min-h-[44px] px-4 py-2 rounded-xl bg-lime-400 text-slate-950 text-xs font-bold hover:bg-lime-300 transition shadow-[0_0_20px_rgba(163,230,53,0.3)] active:scale-95 cursor-pointer flex items-center gap-2"
+              className="min-h-[38px] px-4 py-2 rounded-md bg-[var(--accent)] text-white text-xs font-semibold hover:bg-[var(--accent-hover)] transition active:scale-95 cursor-pointer flex items-center gap-2 shadow-sm"
               aria-label="Open export options and PDF generation dialog"
             >
               <Download className="w-4 h-4" aria-hidden="true" />

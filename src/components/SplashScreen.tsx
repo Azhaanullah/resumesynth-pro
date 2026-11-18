@@ -16,7 +16,7 @@ import { Sparkles } from 'lucide-react';
  */
 
 const WORD = 'ResumeSynth';
-const TAGLINES = ['Evidence over buzzwords.', 'Clear ATS scoring.', 'Tailored with proof.'];
+const TAGLINES = ['Evidence over buzzwords.', 'Honest match scoring.', 'Tailored with proof.'];
 const SEEN_KEY = 'resumesynth_splash_seen';
 const TOTAL_MS = 3800;
 const EXIT_MS = 900;

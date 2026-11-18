@@ -15,19 +15,27 @@
 
 @layer base {
   :root {
-    --bg-main: #070c18;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --score-strong: #a3e635;
-    --score-good: #38bdf8;
-    --score-med: #facc15;
-    --score-low: #f43f5e;
+    --bg-main: #0A0E17;
+    --bg-secondary: #141B2D;
+    --bg-elevated: #1C2541;
+    --text-main: #E8E6E1;
+    --text-muted: #7A7F8C;
+    --text-subtle: #4A4F5C;
+    --accent: #C9553B;
+    --accent-hover: #D9604A;
+    --score-strong: #6EE7B7;
+    --score-good: #67E8F9;
+    --score-med: #FDE047;
+    --score-low: #FDA4AF;
+    --border: rgba(255,255,255,0.08);
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
   }
 
   body {
     background-color: var(--bg-main);
     color: var(--text-main);
-    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-body);
     font-size: 1rem;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
@@ -106,15 +114,21 @@
 html.light,
 body.light,
 .light {
-  --bg-main: #f8fafc;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --bg-main: #FAF8F5;
+  --bg-secondary: #EFEC E6;
+  --bg-elevated: #FFFFFF;
+  --text-main: #1A1A1A;
+  --text-muted: #6B7280;
+  --text-subtle: #9CA3AF;
+  --accent: #C9553B;
+  --accent-hover: #B04A33;
   --score-strong: #059669;
-  --score-good: #0284c7;
-  --score-med: #d97706;
-  --score-low: #e11d48;
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+  --score-good: #0891B2;
+  --score-med: #D97706;
+  --score-low: #DC2626;
+  --border: rgba(0,0,0,0.08);
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
 }
 
 /* Light Mode Scrollbars */

@@ -5,7 +5,7 @@ import { AnalysisResult } from '../types';
 interface ExportModalProps {
   isOpen: boolean;
   onClose: () => void;
-  resumeText: string;
+  textContent: string;
   analysis: AnalysisResult;
   role: string;
 }
@@ -13,7 +13,7 @@ interface ExportModalProps {
 export const ExportModal: React.FC<ExportModalProps> = ({
   isOpen,
   onClose,
-  resumeText,
+  textContent,
   analysis,
   role
 }) => {
@@ -65,7 +65,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
     },
     matchedKeywords: analysis.matched,
     missingKeywords: analysis.missing,
-    resumeText: resumeText
+    textContent: textContent
   }, null, 2);
 
   return (
@@ -136,7 +136,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
-                onClick={() => handleCopy(resumeText, 'md')}
+                onClick={() => handleCopy(textContent, 'md')}
                 className="flex-1 min-h-[44px] py-2 rounded-xl bg-white/[0.1] hover:bg-white/[0.2] text-xs font-semibold text-white transition flex items-center justify-center gap-1.5 cursor-pointer"
                 aria-label="Copy markdown resume"
               >
@@ -145,7 +145,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => handleDownloadFile(resumeText, 'tailored-resume.md', 'text/markdown')}
+                onClick={() => handleDownloadFile(textContent, 'tailored-resume.md', 'text/markdown')}
                 className="flex-1 min-h-[44px] py-2 rounded-xl bg-lime-400 hover:bg-lime-300 text-slate-950 font-bold text-xs transition cursor-pointer"
               >
                 Download
@@ -167,7 +167,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
             <div className="mt-4 flex gap-2">
               <button
                 type="button"
-                onClick={() => handleCopy(resumeText.replace(/[#*`_]/g, ''), 'txt')}
+                onClick={() => handleCopy(textContent.replace(/[#*`_]/g, ''), 'txt')}
                 className="flex-1 min-h-[44px] py-2 rounded-xl bg-white/[0.1] hover:bg-white/[0.2] text-xs font-semibold text-white transition flex items-center justify-center gap-1.5 cursor-pointer"
                 aria-label="Copy plain text resume"
               >
@@ -176,7 +176,7 @@ export const ExportModal: React.FC<ExportModalProps> = ({
               </button>
               <button
                 type="button"
-                onClick={() => handleDownloadFile(resumeText.replace(/[#*`_]/g, ''), 'tailored-resume.txt', 'text/plain')}
+                onClick={() => handleDownloadFile(textContent.replace(/[#*`_]/g, ''), 'tailored-resume.txt', 'text/plain')}
                 className="flex-1 min-h-[44px] py-2 rounded-xl bg-white/[0.2] hover:bg-white/[0.3] text-white font-bold text-xs transition cursor-pointer"
               >
                 Download
