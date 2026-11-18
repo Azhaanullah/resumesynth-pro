@@ -109,7 +109,7 @@ export const App: React.FC = () => {
   // Core Data state
   const [selectedPresetId, setSelectedPresetId] = useState('backend');
   const [jobDescription, setJobDescription] = useState(PRESETS.backend.jd);
-  const [resumeText, setResumeText] = useState(PRESETS.backend.resume);
+  const [textContent, setTextContent] = useState(PRESETS.backend.resume);
   const [targetRole, setTargetRole] = useState(PRESETS.backend.role);
   const [tailorMode, setTailorMode] = useState<TailorMode>('Standard Tailor');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -131,13 +131,13 @@ export const App: React.FC = () => {
 
   // Run Real-time ATS Analysis Engine
   const analysis = useMemo(() => {
-    return runAtsAnalysis(jobDescription, resumeText, tailorMode);
-  }, [jobDescription, resumeText, tailorMode]);
+    return runAtsAnalysis(jobDescription, textContent, tailorMode);
+  }, [jobDescription, textContent, tailorMode]);
 
   // Detect Quality Audits
   const qualityIssues = useMemo(() => {
-    return detectQualityIssues(resumeText, analysis, jobDescription);
-  }, [resumeText, analysis, jobDescription]);
+    return detectQualityIssues(textContent, analysis, jobDescription);
+  }, [textContent, analysis, jobDescription]);
 
   // Generate Interview Questions
   const interviewQuestions = useMemo(() => {
@@ -150,7 +150,7 @@ export const App: React.FC = () => {
     if (!p) return;
     setSelectedPresetId(presetId);
     setJobDescription(p.jd);
-    setResumeText(p.resume);
+    setTextContent(p.resume);
     setTargetRole(p.role);
     showToast(`${p.label} preset loaded.`);
   };
@@ -173,22 +173,22 @@ export const App: React.FC = () => {
   // Insert a missing keyword into the resume
   const handleAddKeyword = (kw: string) => {
     const newBullet = `\n* Applied ${kw} in development to optimize system reliability and delivery.`;
-    setResumeText(prev => prev.trim() + newBullet);
+    setTextContent(prev => prev.trim() + newBullet);
     showToast(`Added starter bullet for "${kw}" to resume.`);
   };
 
   // Apply STAR Bullet Rewrite into resume text
   const handleApplyBullet = (newBullet: string) => {
-    setResumeText(prev => `${prev.trim()}\n* ${newBullet}`);
+    setTextContent(prev => `${prev.trim()}\n* ${newBullet}`);
     showToast('STAR bullet appended to your resume editor.');
   };
 
   // Fix an issue automatically
   const handleFixIssue = (issue: QualityIssue) => {
     if (issue.category === 'verb') {
-      const match = resumeText.match(new RegExp(issue.current.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i'));
+      const match = textContent.match(new RegExp(issue.current.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i'));
       if (match) {
-        setResumeText(prev => prev.replace(match[0], issue.suggested));
+        setTextContent(prev => prev.replace(match[0], issue.suggested));
         showToast('Verb upgraded in resume text.');
       }
     } else {
@@ -297,14 +297,13 @@ export const App: React.FC = () => {
           {/* Section 2: Input Workspace */}
           <Reveal>
             <InputWorkspace
-              jobDescription={jobDescription}
-              onJobDescriptionChange={setJobDescription}
-              resumeText={resumeText}
-              onResumeChange={setResumeText}
+              textContent={textContent}
+              onTextChange={setTextContent}
               targetRole={targetRole}
               onTargetRoleChange={setTargetRole}
               onRunAnalysis={handleRunAnalysis}
               isAnalyzing={isAnalyzing}
+              onParseComplete={(parsed) => {}}
             />
           </Reveal>
 
@@ -443,8 +442,8 @@ export const App: React.FC = () => {
           {/* Section 6: Live Editor & Real Rendered ATS Preview */}
           <Reveal>
             <ResumeEditorLivePreview
-              resumeText={resumeText}
-              onResumeChange={setResumeText}
+              textContent={textContent}
+              onResumeChange={setTextContent}
               analysis={analysis}
               targetRole={targetRole}
             />
@@ -512,7 +511,7 @@ export const App: React.FC = () => {
       <ExportModal
         isOpen={showExportModal}
         onClose={() => setShowExportModal(false)}
-        resumeText={resumeText}
+        textContent={textContent}
         analysis={analysis}
         role={targetRole}
       />
