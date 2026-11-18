@@ -126,14 +126,17 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                   className="sr-only"
                   aria-label="Upload resume file"
                 />
-                <Upload className="w-6 h-6 text-[var(--text-muted)] mx-auto mb-2" aria-hidden="true" />
-                <p className="text-sm text-[var(--text-muted)]">
-                  Drop a PDF or DOCX here to extract resume content into this panel
+                <Upload className="w-8 h-8 text-[var(--accent)] mx-auto mb-3 opacity-70" aria-hidden="true" />
+                <p className="text-sm font-medium text-[var(--text-main)]">
+                  Drop a PDF or DOCX here
+                </p>
+                <p className="text-xs text-[var(--text-muted)] mt-1">
+                  Content will populate this panel automatically
                 </p>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); document.getElementById('file-upload-input')?.click(); }}
-                  className="mt-2 text-xs text-[var(--text-subtle)] hover:text-[var(--accent)] transition cursor-pointer"
+                  className="mt-3 px-4 py-2 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent)] text-sm font-semibold hover:bg-[var(--accent)]/20 transition cursor-pointer"
                 >
                   Browse files
                 </button>

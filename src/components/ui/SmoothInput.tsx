@@ -1,4 +1,4 @@
-import React, {
+﻿import React, {
   type ComponentPropsWithoutRef,
   useEffect,
   useRef,
@@ -33,7 +33,7 @@ export const SmoothInput: React.FC<SmoothInputProps> = ({
   type = "text",
   placeholder,
   style,
-  caretColor = "bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]",
+  caretColor = "bg-[var(--bg-card)] shadow-[0_0_8px_rgba(163,230,53,0.8)]",
   leadingIcon,
   ...props
 }) => {
@@ -122,12 +122,12 @@ export const SmoothInput: React.FC<SmoothInputProps> = ({
   return (
     <div
       className={cn(
-        "relative flex items-center w-full rounded-xl bg-black/50 border border-white/15 transition-all focus-within:border-lime-400 focus-within:ring-1 focus-within:ring-lime-400/40",
+        "relative flex items-center w-full rounded-xl bg-black/50 border border-white/15 transition-all focus-within:border-[var(--border)] focus-within:ring-1 focus-within:ring-lime-400/40",
         wrapperClassName
       )}
     >
       {leadingIcon && (
-        <div className="pl-3.5 flex items-center justify-center shrink-0 pointer-events-none text-slate-400">
+        <div className="pl-3.5 flex items-center justify-center shrink-0 pointer-events-none text-[var(--text-main)]">
           {leadingIcon}
         </div>
       )}
@@ -142,7 +142,7 @@ export const SmoothInput: React.FC<SmoothInputProps> = ({
           type={type}
           placeholder={placeholder}
           className={cn(
-            "col-start-1 col-end-2 row-start-1 row-end-2 w-full bg-transparent px-3.5 py-2.5 text-sm sm:text-xs text-slate-100 placeholder-slate-400 outline-none",
+            "col-start-1 col-end-2 row-start-1 row-end-2 w-full bg-transparent px-3.5 py-2.5 text-sm sm:text-xs text-[var(--text-main)] placeholder-slate-400 outline-none",
             leadingIcon && "pl-2",
             className
           )}
@@ -189,3 +189,4 @@ export const SmoothInput: React.FC<SmoothInputProps> = ({
     </div>
   );
 };
+

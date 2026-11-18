@@ -27,6 +27,7 @@
     --score-good: #67E8F9;
     --score-med: #FDE047;
     --score-low: #FDA4AF;
+    --bg-card: #0A0F1C;
     --border: rgba(255,255,255,0.08);
     --font-display: 'Playfair Display', Georgia, serif;
     --font-body: 'Inter', system-ui, sans-serif;
@@ -115,7 +116,7 @@ html.light,
 body.light,
 .light {
   --bg-main: #FAF8F5;
-  --bg-secondary: #EFEC E6;
+  --bg-secondary: #EFECE6;
   --bg-elevated: #FFFFFF;
   --text-main: #1A1A1A;
   --text-muted: #6B7280;

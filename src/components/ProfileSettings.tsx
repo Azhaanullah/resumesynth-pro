@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+﻿import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { User, Mail, Briefcase, MapPin, Link as LinkIcon, Camera, Trash2, Save, RotateCcw, Check } from 'lucide-react';
 
 // ---------- Types ----------
@@ -70,9 +70,9 @@ const initials = (name: string) =>
     .join('') || '?';
 
 const inputCls =
-  'w-full rounded-lg border bg-white px-3 py-2 pl-9 text-sm text-slate-900 placeholder-slate-400 outline-none transition ' +
-  'focus:ring-2 focus:ring-indigo-500 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 ' +
-  'border-slate-300 dark:border-slate-700';
+  'w-full rounded-lg border bg-white px-3 py-2 pl-9 text-sm text-[var(--text-main)] placeholder-slate-400 outline-none transition ' +
+  'focus:ring-2 focus:ring-indigo-500 dark:bg-[var(--bg-card)] dark:text-[var(--text-main)] dark:placeholder-slate-500 ' +
+  'border-[var(--border)] dark:border-[var(--border)]';
 
 // ---------- Small field wrapper ----------
 const Field: React.FC<{
@@ -83,15 +83,15 @@ const Field: React.FC<{
   children: React.ReactNode;
 }> = ({ id, label, icon, error, children }) => (
   <div>
-    <label htmlFor={id} className="mb-1 block text-xs font-medium text-slate-600 dark:text-slate-300">
+    <label htmlFor={id} className="mb-1 block text-xs font-medium text-[var(--text-main)] dark:text-[var(--text-main)]">
       {label}
     </label>
     <div className="relative">
-      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">{icon}</span>
+      <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-main)]">{icon}</span>
       {children}
     </div>
     {error && (
-      <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-red-500">
+      <p id={`${id}-error`} role="alert" className="mt-1 text-xs text-[var(--text-main)]">
         {error}
       </p>
     )}
@@ -174,7 +174,7 @@ export const ProfileSettings: React.FC = () => {
   return (
     <section
       aria-labelledby="profile-heading"
-      className="border-b border-slate-200 bg-slate-50 px-4 py-4 dark:border-slate-800 dark:bg-[#0a1020] lg:px-8"
+      className="border-b border-[var(--border)] bg-[var(--bg-card)] px-4 py-4 dark:border-[var(--border)] dark:bg-[#0a1020] lg:px-8"
     >
       <div className="mx-auto max-w-5xl">
         <button
@@ -188,20 +188,20 @@ export const ProfileSettings: React.FC = () => {
             {profile.avatar ? (
               <img src={profile.avatar} alt="" className="h-9 w-9 rounded-full object-cover" />
             ) : (
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-600 text-sm font-semibold text-white">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--bg-card)] text-sm font-semibold text-white">
                 {initials(profile.fullName)}
               </span>
             )}
             <span>
-              <span id="profile-heading" className="block text-sm font-semibold text-slate-900 dark:text-slate-100">
+              <span id="profile-heading" className="block text-sm font-semibold text-[var(--text-main)] dark:text-[var(--text-main)]">
                 {profile.fullName || 'Profile settings'}
               </span>
-              <span className="block text-xs text-slate-500 dark:text-slate-400">
+              <span className="block text-xs text-[var(--text-main)] dark:text-[var(--text-main)]">
                 {profile.targetRole || 'Set up your profile'}
               </span>
             </span>
           </span>
-          <span className="text-xs text-indigo-600 dark:text-indigo-400">{open ? 'Hide' : 'Edit'}</span>
+          <span className="text-xs text-[var(--text-main)] dark:text-[var(--text-main)]">{open ? 'Hide' : 'Edit'}</span>
         </button>
 
         {open && (
@@ -211,7 +211,7 @@ export const ProfileSettings: React.FC = () => {
               {profile.avatar ? (
                 <img src={profile.avatar} alt="Your avatar" className="h-16 w-16 rounded-full object-cover" />
               ) : (
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-indigo-600 text-xl font-semibold text-white">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--bg-card)] text-xl font-semibold text-white">
                   {initials(profile.fullName)}
                 </div>
               )}
@@ -219,7 +219,7 @@ export const ProfileSettings: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--bg-card)] dark:border-[var(--border)] dark:hover:bg-[var(--bg-card)]"
                 >
                   <Camera size={14} /> Upload
                 </button>
@@ -227,7 +227,7 @@ export const ProfileSettings: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => update('avatar', '')}
-                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-800"
+                    className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] px-3 py-1.5 text-xs font-medium hover:bg-[var(--bg-card)] dark:border-[var(--border)] dark:hover:bg-[var(--bg-card)]"
                   >
                     <Trash2 size={14} /> Remove
                   </button>
@@ -317,7 +317,7 @@ export const ProfileSettings: React.FC = () => {
 
             {/* Preferences */}
             <fieldset className="space-y-3">
-              <legend className="mb-1 text-xs font-medium text-slate-600 dark:text-slate-300">Preferences</legend>
+              <legend className="mb-1 text-xs font-medium text-[var(--text-main)] dark:text-[var(--text-main)]">Preferences</legend>
               <label className="flex cursor-pointer items-center gap-3 text-sm">
                 <input
                   type="checkbox"
@@ -343,7 +343,7 @@ export const ProfileSettings: React.FC = () => {
               <button
                 type="submit"
                 disabled={!isDirty}
-                className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg bg-[var(--bg-card)] px-4 py-2 text-sm font-medium text-white transition hover:bg-[var(--bg-card)] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Save size={14} /> Save profile
               </button>
@@ -351,11 +351,11 @@ export const ProfileSettings: React.FC = () => {
                 type="button"
                 onClick={handleDiscard}
                 disabled={!isDirty}
-                className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:hover:bg-slate-800"
+                className="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium hover:bg-[var(--bg-card)] disabled:cursor-not-allowed disabled:opacity-50 dark:border-[var(--border)] dark:hover:bg-[var(--bg-card)]"
               >
                 <RotateCcw size={14} /> Discard
               </button>
-              <span aria-live="polite" role="status" className="flex items-center gap-1 text-xs text-emerald-600 dark:text-emerald-400">
+              <span aria-live="polite" role="status" className="flex items-center gap-1 text-xs text-[var(--text-main)] dark:text-[var(--text-main)]">
                 {status && (
                   <>
                     <Check size={12} /> {status}

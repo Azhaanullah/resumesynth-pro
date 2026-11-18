@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from 'react';
+﻿import React, { useEffect, useId, useState } from 'react';
 import { CheckCircle2, AlertTriangle, AlertCircle } from 'lucide-react';
 import { CountUp } from './CountUp';
 
@@ -32,23 +32,23 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
 
   let strokeColor = 'var(--score-strong, #30d158)';
   let statusText = 'Strong evidence';
-  let statusBadgeClass = 'bg-lime-400/15 text-lime-300 border-lime-400/30 score-badge-strong';
+  let statusBadgeClass = 'bg-[var(--bg-card)]/15 text-[var(--text-main)] border-[var(--border)]/30 score-badge-strong';
   let StatusIcon = CheckCircle2;
 
   if (safeScore < 60) {
     strokeColor = 'var(--score-low, #ff453a)';
     statusText = 'Significant gaps';
-    statusBadgeClass = 'bg-rose-400/15 text-rose-200 border-rose-400/30 score-badge-low';
+    statusBadgeClass = 'bg-[var(--bg-card)]/15 text-[var(--text-main)] border-[var(--border)]/30 score-badge-low';
     StatusIcon = AlertCircle;
   } else if (safeScore < 75) {
     strokeColor = 'var(--score-med, #ff9f0a)';
     statusText = 'Needs more evidence';
-    statusBadgeClass = 'bg-amber-400/15 text-amber-200 border-amber-400/30 score-badge-med';
+    statusBadgeClass = 'bg-[var(--bg-card)]/15 text-[var(--text-main)] border-[var(--border)]/30 score-badge-med';
     StatusIcon = AlertTriangle;
   } else if (safeScore < 88) {
     strokeColor = 'var(--score-good, #0a84ff)';
     statusText = 'Good evidence';
-    statusBadgeClass = 'bg-sky-400/15 text-sky-200 border-sky-400/30 score-badge-good';
+    statusBadgeClass = 'bg-[var(--bg-card)]/15 text-[var(--text-main)] border-[var(--border)]/30 score-badge-good';
     StatusIcon = CheckCircle2;
   }
 
@@ -112,7 +112,7 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
         >
           <CountUp value={safeScore} />
         </span>
-        <span className="mt-2 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-slate-400">
+        <span className="mt-2 text-[0.7rem] font-medium uppercase tracking-[0.14em] text-[var(--text-main)]">
           {label}
         </span>
         {showStatus && (
@@ -127,3 +127,4 @@ export const ScoreRing: React.FC<ScoreRingProps> = ({
     </div>
   );
 };
+

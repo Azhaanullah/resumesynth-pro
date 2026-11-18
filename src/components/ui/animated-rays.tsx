@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { cn } from "../../lib/utils";
@@ -63,7 +63,7 @@ export function AnimatedRays({
 
     return (
         <section className={cn("absolute inset-0 overflow-hidden pointer-events-none", className)}>
-            {/* Aurora Background — matches original .hero */}
+            {/* Aurora background matches original hero */}
             <div
                 className="absolute inset-0 pointer-events-none"
                 style={{
@@ -75,7 +75,7 @@ export function AnimatedRays({
                     WebkitMaskImage: "radial-gradient(ellipse at 100% 0%, black 40%, transparent 70%)",
                 }}
             >
-                {/* Animated overlay — matches original .hero::after */}
+                {/* Animated overlay matches original hero */}
                 <div
                     className="absolute inset-0 animate-aurora-bg"
                     style={{
@@ -92,13 +92,13 @@ export function AnimatedRays({
                     {children}
                 </div>
             )}
-            <fieldset className="pointer-events-auto absolute bottom-2 right-2 z-20 flex items-center gap-3 rounded-xl border border-white/15 bg-slate-950/85 px-3 py-2 text-xs text-white shadow-lg backdrop-blur-md">
+            <fieldset className="pointer-events-auto absolute bottom-2 right-2 z-20 flex items-center gap-3 rounded-xl border border-white/15 bg-[var(--bg-card)]/85 px-3 py-2 text-xs text-white shadow-lg backdrop-blur-md">
                 <legend className="sr-only">Animated rays appearance</legend>
                 <label className="flex items-center gap-2">
                     <span>Color</span>
                     <select
                         aria-label="Rays color palette"
-                        className="rounded bg-slate-800 px-2 py-1 text-white"
+                        className="rounded bg-[var(--bg-card)] px-2 py-1 text-white"
                         value={palette}
                         onChange={(event) => setPalette(event.target.value)}
                     >
@@ -125,3 +125,4 @@ export function AnimatedRays({
 }
 
 export default AnimatedRays;
+

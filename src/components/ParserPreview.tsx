@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { AlertCircle, CheckCircle2, ChevronDown, ChevronRight, FileText, Calendar, Briefcase, GraduationCap, Wrench, FolderOpen, Eye, EyeOff } from 'lucide-react';
 import { ParsedDocument, ParsedSection, ParsedDate, ParsedTitle } from '../utils/parser';
 
@@ -40,7 +40,7 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
         <div className="pp-header">
           <div>
             <h2 id="pp-title" className="pp-title">What the parser sees</h2>
-            <p className="pp-subtitle">{parsed.pages} page{parsed.pages !== 1 ? 's' : ''} · {parsed.text.split(/\s+/).length} words · {parsed.sections.length} sections · {parsed.dates.length} dates · {parsed.titles.length} titles</p>
+            <p className="pp-subtitle">{parsed.pages} page{parsed.pages !== 1 ? 's' : ''} - {parsed.text.split(/\s+/).length} words - {parsed.sections.length} sections - {parsed.dates.length} dates - {parsed.titles.length} titles</p>
           </div>
           <div className="pp-header-actions">
             <button
@@ -61,7 +61,7 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
               }}
             >
               <CheckCircle2 size={16} />
-              <span>Fill JD panel (left) — {parsed.jdText ? 'requirements extracted' : 'full text'}</span>
+              <span>Fill JD panel (left) - {parsed.jdText ? 'requirements extracted' : 'full text'}</span>
             </button>
             <button
               type="button"
@@ -72,10 +72,10 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
               }}
             >
               <CheckCircle2 size={16} />
-              <span>Fill Resume panel (right) — {parsed.resumeText ? 'resume sections only' : 'full text'}</span>
+              <span>Fill Resume panel (right) - {parsed.resumeText ? 'resume sections only' : 'full text'}</span>
             </button>
             <button type="button" className="pp-btn pp-btn-icon" onClick={onClose} aria-label="Close parser preview">
-              <span className="pp-close-x" aria-hidden="true">×</span>
+              <span className="pp-close-x" aria-hidden="true">X</span>
             </button>
           </div>
         </div>
@@ -85,7 +85,7 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
           <div className="pp-warnings" role="alert">
             {parsed.warnings.map((w, i) => (
               <div key={i} className="pp-warning">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" aria-hidden="true" />
+                <AlertCircle className="w-4 h-4 text-[var(--text-main)] shrink-0" aria-hidden="true" />
                 <span>{w}</span>
               </div>
             ))}
@@ -123,7 +123,7 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
           <div id="pp-sections-panel" role="tabpanel" className="pp-panel">
             {parsed.sections.length === 0 ? (
               <div className="pp-empty">
-                <FileText className="w-12 h-12 text-slate-500" aria-hidden="true" />
+                <FileText className="w-12 h-12 text-[var(--text-main)]" aria-hidden="true" />
                 <p>No sections detected. The parser couldn't identify standard resume headings.</p>
               </div>
             ) : (
@@ -154,7 +154,7 @@ export const ParserPreview: React.FC<ParserPreviewProps> = ({ parsed, onClose, o
           <div className="pp-meta-grid">
             <MetaCard icon={Calendar} label="Dates found" value={parsed.dates.length} >
               {parsed.dates.slice(0, 5).map((d, i) => (
-                <div key={i} className="pp-meta-item">{d.raw} — {d.context}</div>
+                <div key={i} className="pp-meta-item">{d.raw} - {d.context}</div>
               ))}
               {parsed.dates.length > 5 && <div className="pp-meta-more">+{parsed.dates.length - 5} more</div>}
             </MetaCard>
@@ -196,7 +196,7 @@ const SectionCard: React.FC<SectionCardProps> = ({ section, index, isExpanded, o
         <span className="pp-section-type">{section.type}</span>
         <span className="pp-section-heading">{section.heading}</span>
         <span className="pp-section-meta">
-          {lines.length} line{lines.length !== 1 ? 's' : ''} · lines {section.lineStart}–{section.lineEnd}
+          {lines.length} line{lines.length !== 1 ? 's' : ''} - lines {section.lineStart}-{section.lineEnd}
         </span>
         <ChevronDown size={16} className={`pp-chevron${isExpanded ? ' is-open' : ''}`} aria-hidden="true" />
       </button>
@@ -205,7 +205,7 @@ const SectionCard: React.FC<SectionCardProps> = ({ section, index, isExpanded, o
         <div className="pp-section-content">
           <pre className="pp-section-text">{section.content.trim() || '(empty)'}</pre>
           <div className="pp-section-actions">
-            <span className="pp-section-lines">Lines {section.lineStart}–{section.lineEnd} of source</span>
+            <span className="pp-section-lines">Lines {section.lineStart}-{section.lineEnd} of source</span>
           </div>
         </div>
       )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
 import { Wand2, Copy, Check, PlusCircle } from 'lucide-react';
 
@@ -110,7 +110,7 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
         <div className="space-y-3">
           <div className="rounded-xl border p-3.5" style={{ borderColor: 'rgba(244,63,94,0.25)', backgroundColor: 'rgba(244,63,94,0.05)' }}>
             <div className="flex items-center gap-2 mb-1 text-xs font-mono font-bold uppercase tracking-wider">
-              <span className="w-2 h-2 rounded-full bg-rose-400" aria-hidden="true" />
+              <span className="w-2 h-2 rounded-full bg-[var(--bg-card)]" aria-hidden="true" />
               <span style={{ color: '#f43f5e' }}>Original Passive Bullet:</span>
             </div>
             <p className="text-xs leading-relaxed italic" style={{ color: 'var(--text-muted)' }}>
@@ -134,11 +134,11 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
 
             <div className="mt-3 pt-3 flex flex-wrap items-center justify-between gap-2" style={{ borderTopColor: 'var(--border)', borderTopWidth: 1, borderTopStyle: 'solid' }}>
               <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-                <span className="font-bold" style={{ color: 'var(--accent)' }}>✓ Strong verb</span>
-                <span>•</span>
-                <span className="font-bold" style={{ color: 'var(--accent)' }}>✓ JD keywords included</span>
-                <span>•</span>
-                <span className="font-bold" style={{ color: dark ? '#fbbf24' : '#b45309' }}>⚠ Verify numbers</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>Strong verb</span>
+                <span>|</span>
+                <span className="font-bold" style={{ color: 'var(--accent)' }}>JD keywords included</span>
+                <span>|</span>
+                <span className="font-bold" style={{ color: dark ? '#fbbf24' : '#b45309' }}>Verify numbers</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -171,3 +171,4 @@ export const StarBulletOptimizer: React.FC<StarBulletOptimizerProps> = ({ analys
     </article>
   );
 };
+

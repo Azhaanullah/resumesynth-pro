@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { AnalysisResult, PreviewTemplate } from '../types';
 import { FileEdit, Eye, Printer, Copy, Check, Sparkles, Layout } from 'lucide-react';
 
@@ -62,10 +62,10 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
 
   const renderHighlightedContent = (line: string) => {
     if (!highlightKeywords || analysis.matched.length === 0) {
-      return line.replace(/^[*•-]\s*/, '');
+      return line.replace(/^(?:\*|-|\u2022)\s*/, '');
     }
 
-    let text = line.replace(/^[*•-]\s*/, '');
+    let text = line.replace(/^(?:\*|-|\u2022)\s*/, '');
     const terms = analysis.matched.map(m => m.term);
 
     const pattern = new RegExp(`(${terms.map(t => t.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')).join('|')})`, 'gi');
@@ -177,7 +177,7 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
             </label>
             <div className="flex items-center gap-3 font-mono text-xs">
               <span style={{ color: 'var(--text-muted)' }}>{analysis.wordCount} words</span>
-              <span style={{ color: 'var(--text-subtle)' }}>•</span>
+              <span style={{ color: 'var(--text-subtle)' }}>|</span>
               <span style={{ color: 'var(--text-muted)' }}>{analysis.bulletsCount} bullets</span>
             </div>
           </div>
@@ -228,7 +228,7 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
                 Alex Morgan, Software Engineer
               </h4>
               <p className="text-xs mt-1.5" style={{ color: template === 'modern' ? '#a8a29e' : '#57534e' }}>
-                alex.morgan@example.com • +1 (555) 234-5678 • San Francisco, CA • github.com/alexmorgan
+                alex.morgan@example.com | +1 (555) 234-5678 | San Francisco, CA | github.com/alexmorgan
               </p>
             </div>
 
@@ -249,15 +249,15 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
                     </h5>
                     <div className="space-y-1 pt-1">
                       {sec.content.map((cLine, cIdx) => {
-                        const isBullet = cLine.trim().startsWith('*') || cLine.trim().startsWith('-') || cLine.trim().startsWith('•');
+                        const isBullet = cLine.trim().startsWith('*') || cLine.trim().startsWith('-') || cLine.trim().startsWith('\u2022');
                         return (
                           <div key={cIdx} className={isBullet ? 'flex items-start gap-2 pl-2' : ''}>
                             {isBullet && (
                               <span className="text-xs select-none" style={{ color: template === 'modern' ? '#22d3ee' : '#57534e' }} aria-hidden="true">
-                                •
+                                -
                               </span>
                             )}
-                            <p className={template === 'modern' ? 'text-slate-200' : undefined} style={{ color: template === 'modern' ? '#e2e8f0' : '#1c1917' }}>
+                            <p className={template === 'modern' ? 'text-[var(--text-main)]' : undefined} style={{ color: template === 'modern' ? '#e2e8f0' : '#1c1917' }}>
                               {renderHighlightedContent(cLine)}
                             </p>
                           </div>
@@ -274,3 +274,4 @@ export const ResumeEditorLivePreview: React.FC<ResumeEditorLivePreviewProps> = (
     </section>
   );
 };
+

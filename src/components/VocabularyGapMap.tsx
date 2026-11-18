@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { AnalysisResult } from '../types';
 import { CheckCircle2, AlertCircle, Plus, Sparkles, Search } from 'lucide-react';
 import { SmoothInput } from './ui/SmoothInput';
@@ -79,7 +79,7 @@ export const VocabularyGapMap: React.FC<VocabularyGapMapProps> = ({ analysis, on
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Filter skills or tools (e.g., Docker, SQL, Python)..."
             leadingIcon={<Search className="w-4 h-4" style={{ color: 'var(--text-subtle)' }} aria-hidden="true" />}
-            caretColor="bg-lime-400 shadow-[0_0_8px_rgba(163,230,53,0.8)]"
+            caretColor="bg-[var(--bg-card)] shadow-[0_0_8px_rgba(163,230,53,0.8)]"
           />
         </div>
 
@@ -106,7 +106,7 @@ export const VocabularyGapMap: React.FC<VocabularyGapMapProps> = ({ analysis, on
                     >
                       <span>{item.term}</span>
                       <span className="px-1.5 py-0.2 rounded-full font-mono text-[10px] font-bold" style={{ backgroundColor: dark ? 'rgba(163,230,53,0.2)' : 'rgba(53,32,20,0.1)', color: dark ? '#a3e635' : '#166534' }} aria-label={`found ${item.count} times`}>
-                        ×{item.count}
+                        x{item.count}
                       </span>
                     </span>
                   ))}
@@ -151,7 +151,7 @@ export const VocabularyGapMap: React.FC<VocabularyGapMapProps> = ({ analysis, on
                   ))}
                 </div>
               ) : (
-                <p className="text-xs italic" style={{ color: dark ? '#a3e635' : '#16a34a' }}>✓ No missing keywords detected for this role!</p>
+                <p className="text-xs italic" style={{ color: dark ? '#a3e635' : '#16a34a' }}>No missing keywords detected for this role!</p>
               )}
             </div>
           )}
@@ -164,3 +164,4 @@ export const VocabularyGapMap: React.FC<VocabularyGapMapProps> = ({ analysis, on
     </article>
   );
 };
+

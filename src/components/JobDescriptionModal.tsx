@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { X, Sparkles, FileText, Trash2, ArrowRight, Check, Copy, Tag, RefreshCw, LayoutTemplate } from 'lucide-react';
 import { countWords } from '../utils/atsEngine';
 import { PRESETS } from '../data/presets';
@@ -124,11 +124,11 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
       aria-labelledby="jd-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-5xl h-[92vh] max-h-[900px] flex flex-col rounded-2xl border border-white/15 bg-[#080d1a] shadow-2xl overflow-hidden transition-all text-slate-100 jd-modal-surface">
+      <div className="relative w-full max-w-5xl h-[92vh] max-h-[900px] flex flex-col rounded-2xl border border-white/15 bg-[#080d1a] shadow-2xl overflow-hidden transition-all text-[var(--text-main)] jd-modal-surface">
         {/* Top Header Bar */}
         <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between gap-4 bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-400 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[var(--bg-card)]/15 border border-[var(--border)]/30 text-[var(--text-main)] flex items-center justify-center shadow-xs">
               <FileText className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
@@ -136,11 +136,11 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
                 <h3 id="jd-modal-title" className="font-display text-lg font-bold text-white tracking-tight">
                   Target Job Description Studio
                 </h3>
-                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase bg-[var(--bg-card)]/10 text-[var(--text-main)] border border-[var(--border)]/20">
                   Focused Editor
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[var(--text-main)]">
                 Paste or refine role requirements for precise keyword matching and ATS scoring.
               </p>
             </div>
@@ -153,7 +153,7 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
                 onSave(localText);
                 onClose();
               }}
-              className="min-h-[40px] px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              className="min-h-[40px] px-4 py-2 rounded-xl bg-[var(--bg-card)] hover:bg-[var(--bg-card)] text-white text-xs font-bold transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
               title="Save and Apply (Ctrl+Enter)"
             >
               <span>Save & Apply</span>
@@ -163,7 +163,7 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="min-h-[40px] min-w-[40px] p-2 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white transition flex items-center justify-center cursor-pointer"
+              className="min-h-[40px] min-w-[40px] p-2 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] text-[var(--text-main)] hover:text-white transition flex items-center justify-center cursor-pointer"
               aria-label="Close dialog (Escape)"
               title="Close (Escape)"
             >
@@ -179,55 +179,55 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
             <button
               type="button"
               onClick={handlePasteFromClipboard}
-              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer"
               title="Paste from clipboard"
             >
-              <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[var(--text-main)]" />
               <span>Paste Clipboard</span>
             </button>
 
             <button
               type="button"
               onClick={handleCleanWhitespace}
-              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer"
               title="Clean formatting and excessive whitespace"
             >
-              <RefreshCw className="w-3.5 h-3.5 text-slate-400" />
+              <RefreshCw className="w-3.5 h-3.5 text-[var(--text-main)]" />
               <span>Clean Whitespace</span>
             </button>
 
             <button
               type="button"
               onClick={handleCopyText}
-              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-blue-500" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-[var(--text-main)]" /> : <Copy className="w-3.5 h-3.5 text-[var(--text-main)]" />}
               <span>{copied ? 'Copied' : 'Copy'}</span>
             </button>
 
             {/* Sample Templates Dropdown */}
             <div className="flex items-center gap-1 pl-2 border-l border-white/10">
-              <span className="text-[11px] text-slate-400 flex items-center gap-1">
+              <span className="text-[11px] text-[var(--text-main)] flex items-center gap-1">
                 <LayoutTemplate className="w-3.5 h-3.5" /> Sample:
               </span>
               <button
                 type="button"
                 onClick={() => handleLoadTemplate('backend')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Backend
               </button>
               <button
                 type="button"
                 onClick={() => handleLoadTemplate('data')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Data
               </button>
               <button
                 type="button"
                 onClick={() => handleLoadTemplate('fullstack')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Fullstack
               </button>
@@ -235,17 +235,17 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
           </div>
 
           {/* Metrics Pill */}
-          <div className="flex items-center gap-3 font-mono text-[11px] text-slate-300">
+          <div className="flex items-center gap-3 font-mono text-[11px] text-[var(--text-main)]">
             <span>{wordCount} words</span>
-            <span className="text-white/20">•</span>
+            <span className="text-white/20">|</span>
             <span>{charCount} chars</span>
-            <span className="text-white/20">•</span>
+            <span className="text-white/20">|</span>
             <span>~{readTimeMinutes} min read</span>
             {localText.trim() && (
               <button
                 type="button"
                 onClick={() => setLocalText('')}
-                className="text-rose-400 hover:text-rose-300 transition pl-2 flex items-center gap-1"
+                className="text-[var(--text-main)] hover:text-[var(--text-main)] transition pl-2 flex items-center gap-1"
                 title="Clear all text"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Clear
@@ -260,7 +260,7 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
             value={localText}
             onChange={(e) => setLocalText(e.target.value)}
             placeholder="Paste your target job description, qualifications, and role requirements here..."
-            className="w-full flex-1 p-5 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-sm leading-relaxed resize-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 overflow-y-auto jd-modal-textarea"
+            className="w-full flex-1 p-5 rounded-xl bg-black/50 border border-white/15 text-[var(--text-main)] font-mono text-sm leading-relaxed resize-none focus:outline-none focus:border-[var(--border)] focus:ring-1 focus:ring-blue-500 overflow-y-auto jd-modal-textarea"
             autoFocus
           />
         </div>
@@ -268,8 +268,8 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
         {/* Bottom Detected Keywords Rail */}
         <div className="px-6 py-3.5 border-t border-white/10 bg-black/40 flex flex-wrap items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2 overflow-x-auto py-0.5">
-            <span className="text-[11px] font-semibold text-slate-400 flex items-center gap-1.5 shrink-0">
-              <Tag className="w-3.5 h-3.5 text-blue-400" />
+            <span className="text-[11px] font-semibold text-[var(--text-main)] flex items-center gap-1.5 shrink-0">
+              <Tag className="w-3.5 h-3.5 text-[var(--text-main)]" />
               Detected Technologies ({detectedKeywords.length}):
             </span>
             {detectedKeywords.length > 0 ? (
@@ -277,20 +277,20 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
                 {detectedKeywords.map(kw => (
                   <span
                     key={kw}
-                    className="px-2 py-0.5 rounded-md bg-blue-500/15 border border-blue-500/30 text-blue-300 font-mono text-[11px] uppercase tracking-wider font-semibold"
+                    className="px-2 py-0.5 rounded-md bg-[var(--bg-card)]/15 border border-[var(--border)]/30 text-[var(--text-main)] font-mono text-[11px] uppercase tracking-wider font-semibold"
                   >
                     {kw}
                   </span>
                 ))}
               </div>
             ) : (
-              <span className="text-[11px] text-slate-500 italic">
+              <span className="text-[11px] text-[var(--text-main)] italic">
                 Paste a job posting above to automatically preview required technologies.
               </span>
             )}
           </div>
 
-          <div className="text-[11px] text-slate-400 shrink-0">
+          <div className="text-[11px] text-[var(--text-main)] shrink-0">
             Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-white text-[10px]">Ctrl+Enter</kbd> to save
           </div>
         </div>
@@ -298,3 +298,4 @@ export const JobDescriptionModal: React.FC<JobDescriptionModalProps> = ({
     </div>
   );
 };
+

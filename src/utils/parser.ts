@@ -3,7 +3,7 @@ import mammoth from 'mammoth';
 
 // pdf-parse v2 uses pdfjs-dist under the hood, which requires a worker URL
 // in the browser. Set it once at module load time.
-PDFParse.setWorker('https://cdn.jsdelivr.net/npm/pdf-parse@2.4.5/dist/pdf-parse/web/pdf.worker.mjs');
+PDFParse.setWorker(typeof window !== 'undefined' ? `${window.location.origin}/pdf.worker.mjs` : '/pdf.worker.mjs');
 
 export interface ParsedDate {
   raw: string;

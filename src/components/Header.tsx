@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { RefreshCw, Sun, Moon, Download, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 interface HeaderProps {
@@ -74,26 +74,26 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <a
               href="#dashboard"
-              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-[var(--border)] border-transparent hover:border-[var(--accent)]"
             >
               Workspace
             </a>
             <button
               type="button"
               onClick={onToggleHowItWorks}
-              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)] cursor-pointer"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-[var(--border)] border-transparent hover:border-[var(--accent)] cursor-pointer"
             >
               How It Works
             </button>
             <a
               href="#ats-analysis"
-              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-[var(--border)] border-transparent hover:border-[var(--accent)]"
             >
               Match breakdown
             </a>
             <a
               href="#interview-radar"
-              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-b-2 border-transparent hover:border-[var(--accent)]"
+              className="text-[var(--text-muted)] hover:text-[var(--text-main)] transition py-1 font-medium border-[var(--border)] border-transparent hover:border-[var(--accent)]"
             >
               Interview Radar
             </a>
@@ -142,3 +142,4 @@ export const Header: React.FC<HeaderProps> = ({
     </>
   );
 };
+

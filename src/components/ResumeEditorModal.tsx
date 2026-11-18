@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+﻿import React, { useState, useEffect, useMemo } from 'react';
 import { X, Sparkles, FileEdit, Trash2, ArrowRight, Check, Copy, Wand2, Plus, RefreshCw, LayoutTemplate } from 'lucide-react';
 import { countWords, countBullets } from '../utils/atsEngine';
 import { PRESETS } from '../data/presets';
@@ -105,11 +105,11 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
       aria-labelledby="resume-modal-title"
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in duration-200"
     >
-      <div className="relative w-full max-w-5xl h-[92vh] max-h-[900px] flex flex-col rounded-2xl border border-white/15 bg-[#080d1a] shadow-2xl overflow-hidden transition-all text-slate-100 resume-modal-surface">
+      <div className="relative w-full max-w-5xl h-[92vh] max-h-[900px] flex flex-col rounded-2xl border border-white/15 bg-[#080d1a] shadow-2xl overflow-hidden transition-all text-[var(--text-main)] resume-modal-surface">
         {/* Top Header Bar */}
         <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between gap-4 bg-black/40">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/15 border border-cyan-500/30 text-cyan-400 flex items-center justify-center shadow-xs">
+            <div className="w-10 h-10 rounded-xl bg-[var(--bg-card)]/15 border border-[var(--border)]/30 text-[var(--text-main)] flex items-center justify-center shadow-xs">
               <FileEdit className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
@@ -117,11 +117,11 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
                 <h3 id="resume-modal-title" className="font-display text-lg font-bold text-white tracking-tight">
                   Master Resume Studio & Evidence Editor
                 </h3>
-                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold uppercase bg-[var(--bg-card)]/10 text-[var(--text-main)] border border-[var(--border)]/20">
                   Focused Editor
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-[var(--text-main)]">
                 Structure bullets with power action verbs and measurable metrics for maximum ATS score.
               </p>
             </div>
@@ -134,7 +134,7 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
                 onSave(localText);
                 onClose();
               }}
-              className="min-h-[40px] px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
+              className="min-h-[40px] px-4 py-2 rounded-xl bg-[var(--bg-card)] hover:bg-[var(--bg-card)] text-[var(--text-main)] text-xs font-bold transition shadow-sm flex items-center gap-2 cursor-pointer active:scale-95"
               title="Save and Apply (Ctrl+Enter)"
             >
               <span>Save & Apply</span>
@@ -144,7 +144,7 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="min-h-[40px] min-w-[40px] p-2 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] text-slate-300 hover:text-white transition flex items-center justify-center cursor-pointer"
+              className="min-h-[40px] min-w-[40px] p-2 rounded-xl border border-white/10 bg-white/[0.06] hover:bg-white/[0.12] text-[var(--text-main)] hover:text-white transition flex items-center justify-center cursor-pointer"
               aria-label="Close dialog (Escape)"
               title="Close (Escape)"
             >
@@ -160,17 +160,17 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
             <button
               type="button"
               onClick={handlePasteFromClipboard}
-              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer"
               title="Paste from clipboard"
             >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <Sparkles className="w-3.5 h-3.5 text-[var(--text-main)]" />
               <span>Paste Clipboard</span>
             </button>
 
             <button
               type="button"
               onClick={handleAppendStarBullet}
-              className="px-3 py-1.5 rounded-lg border border-cyan-400/30 bg-cyan-400/10 hover:bg-cyan-400/20 text-cyan-300 transition font-medium flex items-center gap-1.5 cursor-pointer"
+              className="px-3 py-1.5 rounded-lg border border-[var(--border)]/30 bg-[var(--bg-card)]/10 hover:bg-[var(--bg-card)]/20 text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer"
               title="Insert optimized STAR impact bullet"
             >
               <Wand2 className="w-3.5 h-3.5" />
@@ -179,34 +179,34 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
 
             {/* Section Starters */}
             <div className="flex items-center gap-1 pl-2 border-l border-white/10">
-              <span className="text-[11px] text-slate-400 flex items-center gap-1">
+              <span className="text-[11px] text-[var(--text-main)] flex items-center gap-1">
                 <Plus className="w-3 h-3" /> Section:
               </span>
               <button
                 type="button"
                 onClick={() => handleAppendSection('Experience')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Experience
               </button>
               <button
                 type="button"
                 onClick={() => handleAppendSection('Skills')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Skills
               </button>
               <button
                 type="button"
                 onClick={() => handleAppendSection('Projects')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Projects
               </button>
               <button
                 type="button"
                 onClick={() => handleAppendSection('Education')}
-                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-slate-300 font-medium"
+                className="px-2 py-1 rounded text-[11px] hover:bg-white/10 text-[var(--text-main)] font-medium"
               >
                 Education
               </button>
@@ -215,25 +215,25 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
             <button
               type="button"
               onClick={handleCopyText}
-              className="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-slate-200 transition font-medium flex items-center gap-1.5 cursor-pointer ml-1"
+              className="px-2.5 py-1.5 rounded-lg border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] text-[var(--text-main)] transition font-medium flex items-center gap-1.5 cursor-pointer ml-1"
             >
-              {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5 text-slate-400" />}
+              {copied ? <Check className="w-3.5 h-3.5 text-[var(--text-main)]" /> : <Copy className="w-3.5 h-3.5 text-[var(--text-main)]" />}
               <span>{copied ? 'Copied' : 'Copy'}</span>
             </button>
           </div>
 
           {/* Metrics Pill */}
-          <div className="flex items-center gap-3 font-mono text-[11px] text-slate-300">
+          <div className="flex items-center gap-3 font-mono text-[11px] text-[var(--text-main)]">
             <span>{bulletCount} bullets</span>
-            <span className="text-white/20">•</span>
+            <span className="text-white/20">|</span>
             <span>{wordCount} words</span>
-            <span className="text-white/20">•</span>
+            <span className="text-white/20">|</span>
             <span>{charCount} chars</span>
             {localText.trim() && (
               <button
                 type="button"
                 onClick={() => setLocalText('')}
-                className="text-rose-400 hover:text-rose-300 transition pl-2 flex items-center gap-1"
+                className="text-[var(--text-main)] hover:text-[var(--text-main)] transition pl-2 flex items-center gap-1"
                 title="Clear all text"
               >
                 <Trash2 className="w-3.5 h-3.5" /> Clear
@@ -248,19 +248,19 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
             value={localText}
             onChange={(e) => setLocalText(e.target.value)}
             placeholder="Paste your markdown resume, job history, and technical achievements here..."
-            className="w-full flex-1 p-5 rounded-xl bg-black/50 border border-white/15 text-slate-100 font-mono text-sm leading-relaxed resize-none focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 overflow-y-auto resume-modal-textarea"
+            className="w-full flex-1 p-5 rounded-xl bg-black/50 border border-white/15 text-[var(--text-main)] font-mono text-sm leading-relaxed resize-none focus:outline-none focus:border-[var(--border)] focus:ring-1 focus:ring-cyan-400 overflow-y-auto resume-modal-textarea"
             autoFocus
           />
         </div>
 
         {/* Bottom STAR Formula Guidance */}
         <div className="px-6 py-3.5 border-t border-white/10 bg-black/40 flex flex-wrap items-center justify-between gap-3 text-xs">
-          <div className="flex items-center gap-2 text-slate-300 text-[11px]">
-            <span className="font-semibold text-cyan-300">STAR Best Practice:</span>
+          <div className="flex items-center gap-2 text-[var(--text-main)] text-[11px]">
+            <span className="font-semibold text-[var(--text-main)]">STAR Best Practice:</span>
             <span>Lead with active verb (e.g., <em>Architected</em>) + Context (<em>microservices</em>) + Quantified Outcome (<em>+35% throughput</em>).</span>
           </div>
 
-          <div className="text-[11px] text-slate-400 shrink-0">
+          <div className="text-[11px] text-[var(--text-main)] shrink-0">
             Press <kbd className="px-1.5 py-0.5 rounded bg-white/10 font-mono text-white text-[10px]">Ctrl+Enter</kbd> to save
           </div>
         </div>
@@ -268,3 +268,4 @@ export const ResumeEditorModal: React.FC<ResumeEditorModalProps> = ({
     </div>
   );
 };
+

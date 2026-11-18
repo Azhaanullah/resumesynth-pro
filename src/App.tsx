@@ -1,10 +1,10 @@
-import React, { useState, useMemo, useEffect } from 'react';
+﻿import React, { useState, useMemo, useEffect } from 'react';
 import { PRESETS } from './data/presets';
 import { runAtsAnalysis, detectQualityIssues, generateInterviewQuestions } from './utils/atsEngine';
 import { JobApplication, TailorMode, QualityIssue } from './types';
 import { ProfileSettings } from './components/ProfileSettings';
 import { AnimatedRays } from './components/ui/animated-rays';
-import { SplashScreen } from './components/SplashScreen';
+import { SplashScreenAnimated } from './components/SplashScreenAnimated';
 
 // Components
 import { Header } from './components/Header';
@@ -68,7 +68,7 @@ export const App: React.FC = () => {
   const handleToggleSidebar = () => {
     setIsSidebarOpen(prev => {
       const next = !prev;
-      showToast(next ? 'Sidebar opened · Normal view' : 'Sidebar closed · Enlarged view');
+      showToast(next ? 'Sidebar opened - Normal view' : 'Sidebar closed - Enlarged view');
       return next;
     });
   };
@@ -215,13 +215,13 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen ${isDark ? 'dark bg-[#070c18] text-slate-100 selection:bg-lime-400 selection:text-slate-950' : 'light bg-slate-50 text-slate-900 selection:bg-indigo-500 selection:text-white'} font-sans transition-colors duration-200`}>
-      <SplashScreen />
+    <div className={`min-h-screen ${isDark ? 'dark bg-[#070c18] text-[var(--text-main)] selection:bg-[var(--bg-card)] selection:text-[var(--text-main)]' : 'light bg-[var(--bg-card)] text-[var(--text-main)] selection:bg-[var(--bg-card)] selection:text-white'} font-sans transition-colors duration-200`}>
+      <SplashScreenAnimated />
       {/* Ambient background glow orbs - active in dark mode only */}
       {isDark && (
         <>
-          <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-lime-400/[0.035] rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
-          <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-cyan-400/[0.035] rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
+          <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-[var(--bg-card)]/[0.035] rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
+          <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-[var(--bg-card)]/[0.035] rounded-full blur-[140px] pointer-events-none" aria-hidden="true" />
         </>
       )}
 
@@ -241,7 +241,7 @@ export const App: React.FC = () => {
         isOpen={isSidebarOpen}
         onClose={() => {
           setIsSidebarOpen(false);
-          showToast('Sidebar closed · Enlarged view');
+          showToast('Sidebar closed - Enlarged view');
         }}
         activeSection={activeSection}
         onNavigate={handleNavigate}
@@ -254,8 +254,8 @@ export const App: React.FC = () => {
         className="fixed bottom-6 right-6 z-50 pointer-events-none"
       >
         {toastMessage && (
-          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-slate-900 border border-lime-400/40 text-xs font-bold text-white shadow-2xl animate-in slide-in-from-bottom-5 duration-200">
-            <Sparkles className="w-4 h-4 text-lime-300 shrink-0" aria-hidden="true" />
+          <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[var(--bg-card)] border border-[var(--border)]/40 text-xs font-bold text-white shadow-2xl animate-in slide-in-from-bottom-5 duration-200">
+            <Sparkles className="w-4 h-4 text-[var(--text-main)] shrink-0" aria-hidden="true" />
             <span>{toastMessage}</span>
           </div>
         )}
@@ -312,9 +312,9 @@ export const App: React.FC = () => {
             <section id="ats-analysis" aria-labelledby="matrix-heading" className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-white/[0.1]">
               <div>
-                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-lime-300 font-bold">
+                <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-[var(--text-main)] font-bold">
                   <span>Evidence-based estimate</span>
-                  <span className="text-white/20">•</span>
+                  <span className="text-white/20">|</span>
                   <span>Transparent Scoring</span>
                 </div>
                 <h2 id="matrix-heading" className="font-display text-2xl font-bold text-white tracking-tight mt-1">
@@ -325,8 +325,8 @@ export const App: React.FC = () => {
               {/* Mode Selector */}
               <fieldset className="flex items-center gap-1.5 p-1 rounded-xl bg-black/50 border border-white/[0.1]">
                 <legend className="sr-only">Tailor Optimization Mode</legend>
-                <Sliders className="w-4 h-4 text-slate-400 ml-2" aria-hidden="true" />
-                <span className="text-xs font-mono text-slate-300 mr-1 font-semibold uppercase">Mode:</span>
+                <Sliders className="w-4 h-4 text-[var(--text-main)] ml-2" aria-hidden="true" />
+                <span className="text-xs font-mono text-[var(--text-main)] mr-1 font-semibold uppercase">Mode:</span>
                 {(['Standard Tailor', 'Technical Role', 'Fresher / Campus', 'Data / AI Role'] as TailorMode[]).map(mode => (
                   <button
                     key={mode}
@@ -334,8 +334,8 @@ export const App: React.FC = () => {
                     onClick={() => setTailorMode(mode)}
                     className={`min-h-[36px] px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
                       tailorMode === mode
-                        ? 'bg-lime-400/25 text-lime-200 border border-lime-400/40 shadow-sm'
-                        : 'text-slate-300 hover:text-white'
+                        ? 'bg-[var(--bg-card)]/25 text-[var(--text-main)] border border-[var(--border)]/40 shadow-sm'
+                        : 'text-[var(--text-main)] hover:text-white'
                     }`}
                     aria-pressed={tailorMode === mode}
                   >
@@ -346,10 +346,10 @@ export const App: React.FC = () => {
             </div>
 
             {/* Score Showcase Card */}
-            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 rounded-2xl border border-white/[0.12] bg-slate-900/75 p-6 backdrop-blur-xl shadow-xl items-center">
-              <div className="flex flex-col items-center justify-center p-4 border-b lg:border-b-0 lg:border-r border-white/[0.1]">
+            <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6 rounded-2xl border border-white/[0.12] bg-[var(--bg-card)]/75 p-6 backdrop-blur-xl shadow-xl items-center">
+              <div className="flex flex-col items-center justify-center p-4 border-b lg:border-[var(--border)] lg:border-r border-white/[0.1]">
                 <ScoreRing score={analysis.overall} />
-                <p className="text-center text-xs text-slate-300 mt-3">
+                <p className="text-center text-xs text-[var(--text-main)] mt-3">
                   Grounded match computed from {analysis.skills.found} verified keyword signals & STAR metrics.
                 </p>
               </div>
@@ -357,52 +357,52 @@ export const App: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="p-4 rounded-xl border border-white/[0.08] bg-black/50">
                   <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
-                    <span className="text-slate-200">Technical Requirements</span>
-                    <span className="font-mono text-lime-300">{analysis.skills.score}%</span>
+                    <span className="text-[var(--text-main)]">Technical Requirements</span>
+                    <span className="font-mono text-[var(--text-main)]">{analysis.skills.score}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-white/15 overflow-hidden">
-                    <div className="h-full bg-lime-400 rounded-full transition-all duration-700" style={{ width: `${analysis.skills.score}%` }} />
+                    <div className="h-full bg-[var(--bg-card)] rounded-full transition-all duration-700" style={{ width: `${analysis.skills.score}%` }} />
                   </div>
-                  <span className="text-xs text-slate-300 mt-1 block">
+                  <span className="text-xs text-[var(--text-main)] mt-1 block">
                     {analysis.skills.found} of {analysis.skills.total} required technologies found
                   </span>
                 </div>
 
                 <div className="p-4 rounded-xl border border-white/[0.08] bg-black/50">
                   <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
-                    <span className="text-slate-200">Power Action Verbs</span>
-                    <span className="font-mono text-violet-300">{analysis.verbs.score}%</span>
+                    <span className="text-[var(--text-main)]">Power Action Verbs</span>
+                    <span className="font-mono text-[var(--text-main)]">{analysis.verbs.score}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-white/15 overflow-hidden">
-                    <div className="h-full bg-violet-400 rounded-full transition-all duration-700" style={{ width: `${analysis.verbs.score}%` }} />
+                    <div className="h-full bg-[var(--bg-card)] rounded-full transition-all duration-700" style={{ width: `${analysis.verbs.score}%` }} />
                   </div>
-                  <span className="text-xs text-slate-300 mt-1 block">
+                  <span className="text-xs text-[var(--text-main)] mt-1 block">
                     {analysis.verbs.label} ({analysis.verbs.count} verbs detected)
                   </span>
                 </div>
 
                 <div className="p-4 rounded-xl border border-white/[0.08] bg-black/50">
                   <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
-                    <span className="text-slate-200">Quantifiable Proof & Metrics</span>
-                    <span className="font-mono text-cyan-300">{analysis.proof.score}%</span>
+                    <span className="text-[var(--text-main)]">Quantifiable Proof & Metrics</span>
+                    <span className="font-mono text-[var(--text-main)]">{analysis.proof.score}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-white/15 overflow-hidden">
-                    <div className="h-full bg-cyan-400 rounded-full transition-all duration-700" style={{ width: `${analysis.proof.score}%` }} />
+                    <div className="h-full bg-[var(--bg-card)] rounded-full transition-all duration-700" style={{ width: `${analysis.proof.score}%` }} />
                   </div>
-                  <span className="text-xs text-slate-300 mt-1 block">
+                  <span className="text-xs text-[var(--text-main)] mt-1 block">
                     {analysis.proof.label}
                   </span>
                 </div>
 
                 <div className="p-4 rounded-xl border border-white/[0.08] bg-black/50">
                   <div className="flex justify-between items-center text-xs mb-1.5 font-bold">
-                    <span className="text-slate-200">ATS Format & Headings</span>
-                    <span className="font-mono text-emerald-300">{analysis.format.score}%</span>
+                    <span className="text-[var(--text-main)]">ATS Format & Headings</span>
+                    <span className="font-mono text-[var(--text-main)]">{analysis.format.score}%</span>
                   </div>
                   <div className="h-2 w-full rounded-full bg-white/15 overflow-hidden">
-                    <div className="h-full bg-emerald-400 rounded-full transition-all duration-700" style={{ width: `${analysis.format.score}%` }} />
+                    <div className="h-full bg-[var(--bg-card)] rounded-full transition-all duration-700" style={{ width: `${analysis.format.score}%` }} />
                   </div>
-                  <span className="text-xs text-slate-300 mt-1 block">
+                  <span className="text-xs text-[var(--text-main)] mt-1 block">
                     {analysis.format.label}
                   </span>
                 </div>
@@ -489,18 +489,18 @@ export const App: React.FC = () => {
           <Reveal>
             <footer
               role="contentinfo"
-              className="pt-8 pb-12 border-t border-white/[0.1] flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300"
+              className="pt-8 pb-12 border-t border-white/[0.1] flex flex-wrap items-center justify-between gap-4 text-xs text-[var(--text-main)]"
             >
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-lime-400" aria-hidden="true" />
-                <span>ResumeSynth Pro · Honest match scoring & evidence-based tailoring</span>
+                <ShieldCheck className="w-4 h-4 text-[var(--text-main)]" aria-hidden="true" />
+                <span>ResumeSynth Pro - Honest match scoring & evidence-based tailoring</span>
               </div>
-              <div className="flex items-center gap-4 font-mono text-xs text-slate-300">
+              <div className="flex items-center gap-4 font-mono text-xs text-[var(--text-main)]">
                 <span>Local Session Safe</span>
-                <span>•</span>
+                <span>|</span>
                 <span>WCAG AA Compliant</span>
-                <span>•</span>
-                <span>© 2026 ResumeSynth</span>
+                <span>|</span>
+                <span>Copyright 2026 ResumeSynth</span>
               </div>
             </footer>
           </Reveal>
@@ -518,3 +518,4 @@ export const App: React.FC = () => {
     </div>
   );
 };
+
