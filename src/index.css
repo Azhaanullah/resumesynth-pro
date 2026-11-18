@@ -15,13 +15,13 @@
 
 @layer base {
   :root {
-    --bg-main: #0A0E17;
+    --bg-main: #17110E;
     --bg-secondary: #141B2D;
     --bg-elevated: #1C2541;
-    --text-main: #E8E6E1;
+    --text-main: #EAE0CC;
     --text-muted: #7A7F8C;
     --text-subtle: #4A4F5C;
-    --accent: #C9553B;
+    --accent: #2860F5;
     --accent-hover: #D9604A;
     --score-strong: #6EE7B7;
     --score-good: #67E8F9;
@@ -834,4 +834,39 @@ body.light,
 .light .signal-inspector-card p,
 .light .signal-inspector-card span {
   color: #1e293b !important;
+}
+
+/* ── Non-article text panels ─────────────────────────────────── */
+/* Tighter, more compact text rendering inside workspace panels */
+#my-resume textarea {
+  font-size: .875rem;
+  line-height: 1.5;
+  letter-spacing: -.01em;
+  tab-size: 4;
+  font-variant-numeric: tabular-nums;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* Parser preview — panel-style rather than article */
+.pp-section-text,
+.pp-raw-text {
+  font-size: .8rem;
+  line-height: 1.55;
+  letter-spacing: -.01em;
+  font-variant-numeric: tabular-nums;
+  padding: .625rem .75rem;
+  border-radius: 8px;
+}
+
+/* Section card headings and meta */
+.pp-section-type,
+.pp-section-meta {
+  font-size: .68rem;
+  letter-spacing: .06em;
+}
+
+/* Splash screen overrides when active */
+.rs2-active body {
+  overflow: hidden !important;
 }
