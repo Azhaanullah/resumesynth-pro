@@ -100,6 +100,17 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
         {/* Content */}
         <div className="p-5 space-y-4">
 
+          {/* Hidden file input — always mounted so header button always works */}
+          <input
+            id="file-upload-input"
+            type="file"
+            accept=".pdf,.docx,.doc,.txt,.md"
+            onChange={(e) => { const f = e.target.files?.[0]; if (f) processFile(f); e.target.value = ''; }}
+            className="sr-only"
+            aria-label="Upload resume file"
+            tabIndex={-1}
+          />
+
           {/* Dropzone — only shown when textarea is empty */}
           {!textContent.trim() && !isParsing && (
             <div>
@@ -118,14 +129,6 @@ export const InputWorkspace: React.FC<InputWorkspaceProps> = ({
                     : 'border-[var(--border)] hover:border-[var(--accent)]/50 bg-[var(--bg-elevated)]'
                 }`}
               >
-                <input
-                  id="file-upload-input"
-                  type="file"
-                  accept=".pdf,.docx,.doc,.txt,.md"
-                  onChange={(e) => { const f = e.target.files?.[0]; if (f) processFile(f); e.target.value = ''; }}
-                  className="sr-only"
-                  aria-label="Upload resume file"
-                />
                 <Upload className="w-8 h-8 text-[var(--accent)] mx-auto mb-3 opacity-70" aria-hidden="true" />
                 <p className="text-sm font-medium text-[var(--text-main)]">
                   Drop a PDF or DOCX here
